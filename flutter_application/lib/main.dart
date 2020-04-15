@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' ;
 import 'package:flutter_application/screens/loading_screen.dart';
+import 'package:flutter_application/screens/opening_screen.dart';
 
 // This is the main file
 // This will contain all the routes (changes between screens information)
@@ -11,6 +12,7 @@ import 'package:flutter_application/screens/loading_screen.dart';
 void main() => runApp(MaterialApp(
   initialRoute: '/',
   routes: {
-    '/': (context) => LoadingScreen()
+    '/': (context) => LoadingScreen(),
+    '/opening_screen': (context) => OpeningScreen()
   },
 )) ;
