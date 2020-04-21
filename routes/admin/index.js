@@ -1,11 +1,16 @@
 const router = require('express').Router();
+const login  = require('./login');
+const admin  = require('./admin');
+const logout = require('./logout');
 
-router.get('/login', (req,res) => {
-  res.json('login : admin');
-});
+router.get('/', admin.getAll);
+router.get('/:username',admin.get);
+router.post('/login',login);
+router.put('/', admin.put);
+router.delete('/:username',admin.remove);
+router.patch('/:username', admin.patch);
+router.post('/logout',logout);
 
-router.get('/logout', (req,res) => {
-  res.json('logout : admin');
-});
+
 
 module.exports = router;

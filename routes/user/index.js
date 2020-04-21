@@ -1,14 +1,18 @@
 const router = require('express').Router();
 
-const signup = require('./signup');
 const login  = require('./login');
 const logout = require('./logout');
 const cart   = require('./cart');
 const cakes  = require('./cakes');
+const user   = require('./user');
 
-router.post('/signup', signup);
-router.post('/login',login);
+router.post('/login', login);
 router.post('/logout',logout);
+
+router.put('/',            user.put);
+router.patch('/:username', user.patch);
+router.delete('/:username',user.remove);
+
 
 router.get('/:username/cart',          cart.get);
 router.put('/:username/cart',          cart.put);

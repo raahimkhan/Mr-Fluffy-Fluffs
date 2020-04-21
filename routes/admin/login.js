@@ -1,21 +1,18 @@
 const mongoose = require('mongoose');
 const session  = require('express-session');
-const Customer = require('../../src/models/Customer.model');
+const Admin = require('../../src/models/Admin.model');
 
 const login = (req,res) => {
 
-  console.log(req.session.Email);
-  console.log(req.session.PassHash);
-
   if(req.session.Email && req.session.PassHash)
   {
-    Customer.findOne({Email:req.session.Email,PassHash:req.session.PassHash}, (err,customer) => {
+    Admin.findOne({Email:req.session.Email,PassHash:req.session.PassHash}, (err,admin) => {
       if(err) {
         //handle error
       }
       else {
         if(customer) {
-          res.json({status:'True',msg:'Customer Already logged in.'});
+          res.json({status:'True',msg:'Admin Already logged in.'});
         }
       }
     });
@@ -23,15 +20,15 @@ const login = (req,res) => {
   else {
     try {
 
-      Customer.findOne({Email:req.body.customer.Email,PassHash:req.body.customer.PassHash}, (err,customer) => {
+      Admin.findOne({Email:req.body.customer.Email,PassHash:req.body.admin.PassHash}, (err,admin) => {
         if(err) {
           res.json({status:'False',msg:'Invalid Username or Password.'});
         }
         else {
-          if(customer) {
-            req.session.Email    = req.body.customer.Email;
-            req.session.PassHash = req.body.customer.PassHash;
-            res.json({status:'True',msg:'Customer logged in.'});
+          if(admin) {
+            req.session.Email    = req.body.admin.Email;
+            req.session.PassHash = req.body.admin.PassHash;
+            res.json({status:'True',msg:'Admin logged in.'});
           }
           else {
             res.json({status:'False',msg:'Invalid Username or Password.'});
