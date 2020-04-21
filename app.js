@@ -7,7 +7,7 @@ const api     = require('./routes/api');
 app.use('/',index);
 app.use('/api',api);
 
-port = process.env.port | 8080;
+port = process.env.PORT || 8080;
 
 server.listen(port);
 console.log(port);
