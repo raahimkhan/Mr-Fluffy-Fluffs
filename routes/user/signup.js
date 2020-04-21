@@ -3,6 +3,8 @@ const Customer = require('../../src/models/Customer.model');
 
 const signup = (req,res) => {
 
+  console.log(req.body);
+
   try {
 
     Customer.findOne({Email:req.body.customer.Email}, (err,customer) => {
