@@ -10,3 +10,4 @@ app.use('/api',api);
 port = process.env.port | 8080;
 
 server.listen(port);
+console.log(port);
