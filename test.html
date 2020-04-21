@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Backend Testing</title>
+    <style media="screen">
+      body {
+        display : flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content:center;
+      }
+      input[type='text'] {
+        margin : 1rem;
+        padding : 0.5rem 1rem;
+        width: 500px;
+      }
+    </style>
+  </head>
+  <body>
+    <form method='post' action="http://127.0.0.1:5000/api/login" method="post">
+      <span>Username</span>
+      <input class='data' type="text" name="Username" value="">
+      <span>Passhash</span>
+      <input class='data' type="text" name="Passhash" value="">
+      <input class='btn' type="button" name="submit" value="Go">
+      <input type="submit" name="submit" value="submit">
+    </form>
+  </body>
+</html>
