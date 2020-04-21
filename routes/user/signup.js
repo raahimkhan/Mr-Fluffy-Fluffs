@@ -3,11 +3,14 @@ const Customer = require('../../src/models/Customer.model');
 
 const signup = (req,res) => {
 
-  console.log(req.body);
+  let data = JSON.parse(req.body);
+
+  console.log(data);
+  console.log(data.customer.Email);
 
   try {
 
-    Customer.findOne({Email:req.body.customer.Email}, (err,customer) => {
+    Customer.findOne({Email:data.customer.Email}, (err,customer) => {
       if(err) {
         res.json({status:'False',msg:'Internal Server Error.'});
       }
@@ -18,12 +21,12 @@ const signup = (req,res) => {
           let newCustomer = new Customer({
 
             _id      : new mongoose.Types.ObjectId(),
-            FullName : req.body.customer.FullName,
-            Username : req.body.customer.Username,
-            PassHash : req.body.customer.PassHash,
-            Address  : req.body.customer.Address,
-            Email    : req.body.customer.Email,
-            MobileNo : req.body.customer.MobileNo
+            FullName : data.customer.FullName,
+            Username : data.customer.Username,
+            PassHash : data.customer.PassHash,
+            Address  : data.customer.Address,
+            Email    : data.customer.Email,
+            MobileNo : data.customer.MobileNo
 
           });
 
