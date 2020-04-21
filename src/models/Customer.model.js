@@ -11,4 +11,3 @@ Customer= new schema({
 	MobileNo:Number
 })
 module.exports=mongoose.model('Customer',Customer)
-

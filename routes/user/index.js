@@ -6,9 +6,9 @@ const logout = require('./logout');
 const cart   = require('./cart');
 const cakes  = require('./cakes');
 
-router.get('/signup', signup);
-router.get('/login',login);
-router.get('/logout',logout);
+router.post('/signup', signup);
+router.post('/login',login);
+router.post('/logout',logout);
 
 router.get('/:username/cart',          cart.get);
 router.put('/:username/cart',          cart.put);
