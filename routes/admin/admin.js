@@ -1,6 +1,28 @@
 const mongoose = require('mongoose');
 const Admin = require('../../src/models/Admin.model');
 
+const get = (req,res) => {
+  try {
+    Admin.findOne({Username:req.params.username}, (err,admin) => {
+      if(err) {
+        res.json({status:'False',msg:'No admins present.'});
+      }
+      else {
+        if(admin !== null) {
+          res.json({status:'True',msg:'Admins found.',data:admin});
+        }
+        else {
+          res.json({status:'False',msg:'No admins present.'});
+        }
+      }
+
+    });
+  }
+  catch(Error) {
+    res.json({status:'False',msg:'Internal Server Error.'});
+  }
+}
+
 const getAll = (req,res) => {
 
   try {
