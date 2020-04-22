@@ -2,14 +2,15 @@ const router = require('express').Router();
 const login  = require('./login');
 const admin  = require('./admin');
 const logout = require('./logout');
+const auth   = require('../../src/authentication/admin');
 
-router.get('/', admin.getAll);
-router.get('/:username',admin.get);
+router.get('/',auth,admin.getAll);
+router.get('/:username',auth,admin.get);
 router.post('/login',login);
-router.put('/', admin.put);
-router.delete('/:username',admin.remove);
-router.patch('/:username', admin.patch);
-router.post('/logout',logout);
+router.put('/',auth,admin.put);
+router.delete('/:username',auth,admin.remove);
+router.patch('/:username',auth,admin.patch);
+router.post('/logout',auth,logout);
 
 
 

@@ -96,4 +96,33 @@ const put = (req,res) => {
 
 };
 
-module.exports = {remove,patch,put};
+const get = (req,res) => {
+  try {
+    Customer.findOne({Username:req.params.username}, (err,customer) => {
+      if(err) {
+        res.json({status:'False',msg:'Requested customer not present.'});
+      }
+      else {
+        if(cake) {
+          res.json({status:'True',msg:'Customer found.',data:customer});
+        }
+        else {
+          res.json({status:'False',msg:'Requested customer not present.'});
+        }
+      }
+    });
+  }
+  catch(Error) {
+    res.json({status:'False',msg:'Internal Server Error.'});
+  }
+};
+
+const getAll = (req,res) => {
+
+  Customer.find({}, (err,customer) => {
+    res.json({status:'True', msg:'Customers', data:customer});
+  });
+
+};
+
+module.exports = {remove,patch,put,get,getAll};

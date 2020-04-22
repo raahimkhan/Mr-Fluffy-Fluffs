@@ -11,7 +11,7 @@ const login = (req,res) => {
         //handle error
       }
       else {
-        if(customer) {
+        if(admin) {
           res.json({status:'True',msg:'Admin Already logged in.'});
         }
       }
@@ -20,7 +20,7 @@ const login = (req,res) => {
   else {
     try {
 
-      Admin.findOne({Email:req.body.customer.Email,PassHash:req.body.admin.PassHash}, (err,admin) => {
+      Admin.findOne({Email:req.body.admin.Email,PassHash:req.body.admin.PassHash}, (err,admin) => {
         if(err) {
           res.json({status:'False',msg:'Invalid Username or Password.'});
         }

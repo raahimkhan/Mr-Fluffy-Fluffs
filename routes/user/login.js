@@ -4,9 +4,6 @@ const Customer = require('../../src/models/Customer.model');
 
 const login = (req,res) => {
 
-  console.log(req.session.Email);
-  console.log(req.session.PassHash);
-
   if(req.session.Email && req.session.PassHash)
   {
     Customer.findOne({Email:req.session.Email,PassHash:req.session.PassHash}, (err,customer) => {
@@ -16,6 +13,10 @@ const login = (req,res) => {
       else {
         if(customer) {
           res.json({status:'True',msg:'Customer Already logged in.'});
+        }
+        else {
+          req.session.destroy();
+          res.json({status:'False',msg:'Credentials has been changed. Please log in agains.'});
         }
       }
     });

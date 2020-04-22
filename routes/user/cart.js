@@ -1,4 +1,7 @@
-const get = (req,res) => {
+const mongoose = require('mongoose');
+const Cart     = require('../../src/models/Cart.model');
+
+const get = (req,res) => {  
   res.json(`get cart of ${req.params['username']}`);
 };
 
