@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 const Admin = require('../../src/models/Admin.model');
+const bcrypt = require('bcrypt');
 
 const get = (req,res) => {
   try {
-    Admin.findOne({Username:req.params.username}, (err,admin) => {
+    Admin.findOne({_id:req.params.adminid}, (err,admin) => {
       if(err) {
         res.json({status:'False',msg:'No admins present.'});
       }
@@ -26,7 +27,7 @@ const get = (req,res) => {
 const getAll = (req,res) => {
 
   try {
-    Admin.findMany({}, (err,admin) => {
+    Admin.find({}, (err,admin) => {
       if(err) {
         res.json({status:'False',msg:'No admins present.'});
       }
@@ -51,7 +52,7 @@ const remove = (req,res) => {
 
   try {
 
-    Admin.deleteOne({Username:req.params.username}, (err,admin) => {
+    Admin.deleteOne({_id:req.params.adminid}, (err,admin) => {
 
       if(err) {
         res.json({status:'False',msg:'Admin not present.'});
@@ -78,13 +79,18 @@ const patch = (req,res) => {
 
   try {
 
-    Admin.updateOne({Username:req.params.username},{$set:req.body.admin},{multi:true}, (err,admin) => {
+    Admin.updateOne({_id:req.params.adminid},{$set:req.body.admin},{multi:true}, (err,admin) => {
 
       if(err) {
         res.json({status:'False',msg:'Admin not present.'});
       }
       else {
-        res.json({status:'True',msg:'Admin record updated.'});
+        if(admin.updatedCount) {
+          res.json({status:'True',msg:'Admin record updated.'});
+        }
+        else {
+          res.json({status:'False',msg:'Cannot update admin record.'});
+        }
       }
 
     });
@@ -109,22 +115,30 @@ const put = (req,res) => {
 
         if(admin == null) {
 
-          let newAdmin = new Admin({
-
-            _id      : new mongoose.Types.ObjectId(),
-            FullName : req.body.admin.FullName,
-            Username : req.body.admin.Username,
-            PassHash : req.body.admin.PassHash,
-            Email    : req.body.admin.Email
-
-          });
-
-          newAdmin.save((err,admin) => {
+          const salt_iterations = 10;
+          bcrypt.hash(req.body.admin.PassHash,salt_iterations, (err,hash) => {
             if(err) {
-              res.json({status:'False',msg:'Cannot add admin.'});
+              res.json({status:'False',msg:'Cannot hash admin password.'});
             }
             else {
-              res.json({status:'True',msg:'Admin added.'});
+              let newAdmin = new Admin({
+
+                _id      : new mongoose.Types.ObjectId(),
+                FullName : req.body.admin.FullName,
+                Username : req.body.admin.Username,
+                PassHash : hash,
+                Email    : req.body.admin.Email
+
+              });
+
+              newAdmin.save((err,admin) => {
+                if(err) {
+                  res.json({status:'False',msg:'Cannot add admin.'});
+                }
+                else {
+                  res.json({status:'True',msg:'Admin added.'});
+                }
+              });
             }
           });
 

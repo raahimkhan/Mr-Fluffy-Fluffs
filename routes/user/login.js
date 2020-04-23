@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const session  = require('express-session');
 const Customer = require('../../src/models/Customer.model');
+const bcrypt   = require('bcrypt');
 
 const login = (req,res) => {
 
@@ -16,7 +17,7 @@ const login = (req,res) => {
         }
         else {
           req.session.destroy();
-          res.json({status:'False',msg:'Credentials has been changed. Please log in agains.'});
+          res.json({status:'False',msg:'Credentials has been changed. Please log in again.'});
         }
       }
     });
@@ -24,15 +25,22 @@ const login = (req,res) => {
   else {
     try {
 
-      Customer.findOne({Email:req.body.customer.Email,PassHash:req.body.customer.PassHash}, (err,customer) => {
+      Customer.findOne({Email:req.body.customer.Email}, (err,customer) => {
         if(err) {
           res.json({status:'False',msg:'Invalid Username or Password.'});
         }
         else {
           if(customer) {
-            req.session.Email    = req.body.customer.Email;
-            req.session.PassHash = req.body.customer.PassHash;
-            res.json({status:'True',msg:'Customer logged in.'});
+            bcrypt.compare(req.body.customer.PassHash,customer.PassHash,(err,match) => {
+              if(match) {
+                req.session.Email    = req.body.customer.Email;
+                req.session.PassHash = customer.PassHash;
+                res.json({status:'True',msg:'Customer logged in.'});
+              }
+              else {
+                res.json({status:'False',msg:'Invalid Username or Password.'});
+              }
+            });
           }
           else {
             res.json({status:'False',msg:'Invalid Username or Password.'});

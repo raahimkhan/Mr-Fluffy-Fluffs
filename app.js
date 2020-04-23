@@ -1,27 +1,34 @@
-const express = require('express');
-const app     = express();
-const server  = require('http').createServer(app);
-const router  = require('express').Router();
-const session = require('express-session');
-const index   = require('./routes/index');
-const api     = require('./routes/api');
-const db      = require('./src/db_connection');
+const db            = require('./src/db_connection');
+const express       = require('express');
+const app           = express();
+const server        = require('http').createServer(app);
+const router        = require('express').Router();
+const session       = require('express-session');
+const index         = require('./routes/index');
+const api           = require('./routes/api');
+const session_store = require('connect-mongo')(session);
+const {uuid}        = require('uuidv4');
+const mongoose      = require('mongoose');
 
-app.use(session(
-  {
-    secret:'some_daMn-Goods3cr3t',
+
+const session_options = {
+    secret:'some_(^^)_daMn$-&Goods3cr3t',
     saveUninitialized:true,
     resave:true,
-    name:'s3Cr3tN@m3',
+    name:'fluffy_fluffs_session_id',
     cookie: {
       httpOnly:true,
       secure:false, // for production use true
       sameSite:true,
       maxAge:86400 // valid for one day only
+    },
+    store:new session_store({mongooseConnection:mongoose.connection}),
+    genid: function(req) {
+      return uuid();
     }
-  }
-  ));
+}
 
+app.use(session(session_options));
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use('/',index);

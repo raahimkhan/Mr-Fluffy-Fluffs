@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const Pancake  = require('../../src/models/Pancake.model');
 
+
 const get = (req,res) => {
 
   try {
 
-    Pancake.findOne({Name:req.params.item}, (err,cake) => {
+    Pancake.findOne({_id:req.params.item}, (err,cake) => {
       if(err) {
         res.json({status:'False',msg:'Requested pancake not present.'});
       }
@@ -55,10 +56,10 @@ const put = (req,res) => {
           let newPancake = new Pancake(
 
             {
-            _id: new mongoose.Types.ObjectId(),
-            Name: req.body.pancake.Name,
-            Description: req.body.pancake.Description,
-            Price: req.body.pancake.Price
+            _id         : new mongoose.Types.ObjectId(),
+            Name        : req.body.pancake.Name,
+            Description : req.body.pancake.Description,
+            Price       : req.body.pancake.Price
             }
           );
           newPancake.save((err,cake) => {
@@ -83,13 +84,18 @@ const patch = (req,res) => {
 
   try {
 
-    Pancake.updateOne({Name:req.params.item},{$set:req.body.pancake},{multi:true}, (err,cake) => {
+    Pancake.updateOne({_id:req.params.item},{$set:req.body.pancake},{multi:true}, (err,cake) => {
 
       if(err) {
         res.json({status:'False',msg:'Pancake not present.'});
       }
       else {
-        res.json({status:'True',msg:'Pancake record updated.'});
+        if(cake.updatedCount) {
+          res.json({status:'True',msg:'Pancake record updated.'});
+        }
+        else {
+          res.json({status:'False',msg:'Cannot update pancake record.'});
+        }
       }
 
     });
@@ -105,7 +111,7 @@ const remove = (req,res) => {
 
   try {
 
-    Pancake.deleteOne({Name:req.params.item}, (err,cake) => {
+    Pancake.deleteOne({_id:req.params.item}, (err,cake) => {
 
       if(err) {
         res.json({status:'False',msg:'Pancake not present.'});

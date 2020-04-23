@@ -4,8 +4,8 @@ const Topping  = require('../../src/models/Toppings.model');
 const get = (req,res) => {
 
   try {
-    
-    Topping.findOne({Name:req.params.name}, (err,topping) => {
+
+    Topping.findOne({_id:req.params.name}, (err,topping) => {
       if(err) {
         res.json({status:'False',msg:'Requested topping not present.'});
       }
@@ -55,9 +55,9 @@ const put = (req,res) => {
           let newTopping = new Topping(
 
             {
-            _id: new mongoose.Types.ObjectId(),
-            Name: req.body.topping.Name,
-            Price: req.body.topping.Price
+            _id   : new mongoose.Types.ObjectId(),
+            Name  : req.body.topping.Name,
+            Price : req.body.topping.Price
             }
           );
           newTopping.save((err,topping) => {
@@ -82,13 +82,18 @@ const patch = (req,res) => {
 
   try {
 
-    Topping.updateOne({Name:req.params.name},{$set:req.body.topping},{multi:true}, (err,topping) => {
+    Topping.updateOne({_id:req.params.name},{$set:req.body.topping},{multi:true}, (err,topping) => {
 
       if(err) {
         res.json({status:'False',msg:'Topping not present.'});
       }
       else {
-        res.json({status:'True',msg:'Topping record updated.'});
+        if(topping.updatedCount) {
+          res.json({status:'True',msg:'Topping record updated.'});
+        }
+        else {
+          res.json({status:'False',msg:'Cannot update topping record.'});
+        }
       }
 
     });
@@ -104,7 +109,7 @@ const remove = (req,res) => {
 
   try {
 
-    Topping.deleteOne({Name:req.params.name}, (err,topping) => {
+    Topping.deleteOne({_id:req.params.name}, (err,topping) => {
 
       if(err) {
         res.json({status:'False',msg:'Topping not present.'});

@@ -4,7 +4,7 @@ const Filling  = require('../../src/models/Fillings.model');
 const get = (req,res) => {
 
   try {
-    Filling.findOne({Name:req.params.name}, (err,filling) => {
+    Filling.findOne({_id:req.params.name}, (err,filling) => {
       if(err) {
         res.json({status:'False',msg:'Requested filling not present.'});
       }
@@ -54,9 +54,9 @@ const put = (req,res) => {
           let newFilling = new Filling(
 
             {
-            _id: new mongoose.Types.ObjectId(),
-            Name: req.body.filling.Name,
-            Price: req.body.filling.Price
+            _id   : new mongoose.Types.ObjectId(),
+            Name  : req.body.filling.Name,
+            Price : req.body.filling.Price
             }
           );
           newFilling.save((err,filling) => {
@@ -81,13 +81,18 @@ const patch = (req,res) => {
 
   try {
 
-    Filling.updateOne({Name:req.params.name},{$set:req.body.filling},{multi:true}, (err,filling) => {
+    Filling.updateOne({_id:req.params.name},{$set:req.body.filling},{multi:true}, (err,filling) => {
 
       if(err) {
         res.json({status:'False',msg:'Filling not present.'});
       }
       else {
-        res.json({status:'True',msg:'Filling record updated.'});
+        if(filling.updatedCount) {
+          res.json({status:'True',msg:'Filling record updated.'});
+        }
+        else {
+          res.json({status:'False',msg:'Cannot update filling record.'});
+        }
       }
 
     });
@@ -103,7 +108,7 @@ const remove = (req,res) => {
 
   try {
 
-    Filling.deleteOne({Name:req.params.name}, (err,filling) => {
+    Filling.deleteOne({_id:req.params.name}, (err,filling) => {
 
       if(err) {
         res.json({status:'False',msg:'Filling not present.'});

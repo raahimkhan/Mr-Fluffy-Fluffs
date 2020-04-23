@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const session  = require('express-session');
 const Admin = require('../../src/models/Admin.model');
+const bcrypt  = require('bcrypt');
 
 const login = (req,res) => {
 
@@ -14,21 +15,29 @@ const login = (req,res) => {
         if(admin) {
           res.json({status:'True',msg:'Admin Already logged in.'});
         }
+        else {
+          req.session.destroy();
+          res.json({status:'False',msg:'Credentials has been changed. Please log in again.'});
+        }
       }
     });
   }
   else {
     try {
 
-      Admin.findOne({Email:req.body.admin.Email,PassHash:req.body.admin.PassHash}, (err,admin) => {
+      Admin.findOne({Email:req.body.admin.Email}, (err,admin) => {
         if(err) {
           res.json({status:'False',msg:'Invalid Username or Password.'});
         }
         else {
           if(admin) {
-            req.session.Email    = req.body.admin.Email;
-            req.session.PassHash = req.body.admin.PassHash;
-            res.json({status:'True',msg:'Admin logged in.'});
+            bcrypt.compare(req.body.admin.PassHash,admin.PassHash, (err,match) => {
+                if(match) {
+                req.session.Email    = req.body.admin.Email;
+                req.session.PassHash = admin.PassHash;
+                res.json({status:'True',msg:'Admin logged in.'});
+              }
+            });
           }
           else {
             res.json({status:'False',msg:'Invalid Username or Password.'});

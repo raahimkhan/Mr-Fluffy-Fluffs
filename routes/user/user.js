@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const Customer = require('../../src/models/Customer.model');
+const bcrypt   = require('bcrypt');
 
 const remove = (req,res) => {
 
   try {
 
-    Customer.deleteOne({Username:req.params.username}, (err,customer) => {
+    Customer.deleteOne({_id:req.params.userid}, (err,customer) => {
 
       if(err) {
         res.json({status:'False',msg:'Customer not present.'});
@@ -32,7 +33,7 @@ const patch = (req,res) => {
 
   try {
 
-    Customer.updateOne({Username:req.params.username},{$set:req.body.customer},{multi:true}, (err,customer) => {
+    Customer.updateOne({_id:req.params.userid},{$set:req.body.customer},{multi:true}, (err,customer) => {
 
       if(err) {
         res.json({status:'False',msg:'Customer not present.'});
@@ -62,24 +63,32 @@ const put = (req,res) => {
 
         if(customer == null) {
 
-          let newCustomer = new Customer({
-
-            _id      : new mongoose.Types.ObjectId(),
-            FullName : req.body.customer.FullName,
-            Username : req.body.customer.Username,
-            PassHash : req.body.customer.PassHash,
-            Address  : req.body.customer.Address,
-            Email    : req.body.customer.Email,
-            MobileNo : req.body.customer.MobileNo
-
-          });
-
-          newCustomer.save((err,customer) => {
+          const salt_iterations = 10;
+          bcrypt.hash(req.body.customer.PassHash,salt_iterations,(err,hash) => {
             if(err) {
-              res.json({status:'False',msg:'Cannot add customer.'});
+              res.json({status:'False',msg:'Error hashing user password.'});
             }
             else {
-              res.json({status:'True',msg:'Customer added.'});
+              let newCustomer = new Customer({
+
+                _id      : new mongoose.Types.ObjectId(),
+                FullName : req.body.customer.FullName,
+                Username : req.body.customer.Username,
+                PassHash : hash,
+                Address  : req.body.customer.Address,
+                Email    : req.body.customer.Email,
+                MobileNo : req.body.customer.MobileNo
+
+              });
+
+              newCustomer.save((err,customer) => {
+                if(err) {
+                  res.json({status:'False',msg:'Cannot add customer.'});
+                }
+                else {
+                  res.json({status:'True',msg:'Customer added.'});
+                }
+              });
             }
           });
 
@@ -98,7 +107,7 @@ const put = (req,res) => {
 
 const get = (req,res) => {
   try {
-    Customer.findOne({Username:req.params.username}, (err,customer) => {
+    Customer.findOne({_id:req.params.userid}, (err,customer) => {
       if(err) {
         res.json({status:'False',msg:'Requested customer not present.'});
       }

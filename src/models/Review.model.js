@@ -8,7 +8,7 @@ Review= new schema({
 	type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer'
 	},
-	pancake:{
+	Pancake:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Custom'
 	},

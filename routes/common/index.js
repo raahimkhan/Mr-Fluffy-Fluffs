@@ -6,14 +6,13 @@ const leaderboard = require('./leaderboard');
 const toppings    = require('./toppings');
 const fillings    = require('./fillings');
 const services    = require('./services');
-const reviews     = require('./reviews');
 
 // Menu handlers (need to add some filters for this section)
 router.get('/menu/:item', menu.get);
 router.get('/menu',menu.getAll);
 router.put('/menu',adminAuth,menu.put);
-router.delete('/menu/:item',adminAuth,menu.remove);
 router.patch('/menu/:item',adminAuth,menu.patch);
+router.delete('/menu/:item',adminAuth,menu.remove);
 
 // Toppings' handlers (need to add price filters for this section)
 router.get('/toppings/:name', toppings.get);
@@ -38,12 +37,6 @@ router.put('/services',adminAuth,services.put);
 router.patch('/services/:name',adminAuth,services.patch);
 router.delete('/services/:name',adminAuth,services.remove);
 
-// Reviews' handlers (we need to add filters to this section)
-router.get('/reviews', reviews.getAll);
-router.get('/reviews/:name', reviews.get);
-router.put('/reviews',adminAuth,reviews.put);
-router.patch('/reviews/:name',adminAuth,reviews.patch);
-router.delete('/reviews/:name',adminAuth,reviews.remove);
 
 
 

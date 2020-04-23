@@ -5,7 +5,7 @@ const get = (req,res) => {
 
   try {
 
-    Service.findOne({Name:req.params.name}, (err,service) => {
+    Service.findOne({_id:req.params.name}, (err,service) => {
       if(err) {
         res.json({status:'False',msg:'Requested service not present.'});
       }
@@ -55,9 +55,9 @@ const put = (req,res) => {
           let newService = new Service(
 
             {
-            _id: new mongoose.Types.ObjectId(),
-            Name: req.body.service.Name,
-            Status: req.body.service.Status
+            _id     : new mongoose.Types.ObjectId(),
+            Name    : req.body.service.Name,
+            Status  : req.body.service.Status
             }
           );
           newService.save((err,service) => {
@@ -82,13 +82,18 @@ const patch = (req,res) => {
 
   try {
 
-    Service.updateOne({Name:req.params.name},{$set:req.body.service},{multi:true}, (err,service) => {
+    Service.updateOne({_id:req.params.name},{$set:req.body.service},{multi:true}, (err,service) => {
 
       if(err) {
         res.json({status:'False',msg:'Service not present.'});
       }
       else {
-        res.json({status:'True',msg:'Service record updated.'});
+        if(service.updatedCount) {
+          res.json({status:'True',msg:'Service record updated.'});
+        }
+        else {
+          res.json({status:'False',msg:'Cannot update service record.'});
+          }
       }
 
     });
@@ -104,7 +109,7 @@ const remove = (req,res) => {
 
   try {
 
-    Service.deleteOne({Name:req.params.name}, (err,service) => {
+    Service.deleteOne({_id:req.params.name}, (err,service) => {
 
       if(err) {
         res.json({status:'False',msg:'Service not present.'});
