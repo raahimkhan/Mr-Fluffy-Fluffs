@@ -100,12 +100,14 @@ All the requests requiring body parameters to pass to api with request should be
 - Signing up a Customer
 
 ***{
-  "customer": {
-    "FullName": "Mohsin Ul Islam",
-    "Username": "mohsin",
-    "PassHash": "changed",
-    "Email": "mohsin@mail.com"
-  }
+	"customer":{		
+		"FullName":"abc",
+		"Username":"asd",
+		"PassHash":"1233434",
+		"Address":"asdasdsdd",
+		"Email":"sameer@abc.com",
+		"MobileNo":123456
+	}
 }***
 
 ## Response
