@@ -41,6 +41,6 @@ router.delete('/services/:name',adminAuth,services.remove);
 
 
 // Leaderboard handler
-router.get('/leaderboard', leaderboard.getAll);
+router.get('/leaderboard', leaderboard.get);
 
 module.exports = router;

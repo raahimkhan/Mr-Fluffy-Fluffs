@@ -5,9 +5,10 @@ const bcrypt   = require('bcrypt');
 
 const login = (req,res) => {
 
-  if(req.session.Email && req.session.PassHash)
+  if((req.session.Username || req.session.Email) && req.session.PassHash)
   {
-    Customer.findOne({Email:req.session.Email,PassHash:req.session.PassHash}, (err,customer) => {
+    let credentials = req.session.Email ? {Email:req.session.Email,PassHash:req.session.PassHash} : {Username:req.session.Username,PassHash:req.session.PassHash}
+    Customer.findOne(credentials, (err,customer) => {
       if(err) {
         //handle error
       }
@@ -24,8 +25,8 @@ const login = (req,res) => {
   }
   else {
     try {
-
-      Customer.findOne({Email:req.body.customer.Email}, (err,customer) => {
+      let credentials = req.body.customer.Username ? {Username:req.body.customer.Username} : {Email:req.body.customer.Email}
+      Customer.findOne(credentials, (err,customer) => {
         if(err) {
           res.json({status:'False',msg:'Invalid Username or Password.'});
         }
@@ -33,7 +34,12 @@ const login = (req,res) => {
           if(customer) {
             bcrypt.compare(req.body.customer.PassHash,customer.PassHash,(err,match) => {
               if(match) {
-                req.session.Email    = req.body.customer.Email;
+                if(req.body.customer.Username) {
+                  req.session.Username = req.body.customer.Username;
+                }
+                else {
+                  req.session.Email = req.body.customer.Email
+                }
                 req.session.PassHash = customer.PassHash;
                 res.json({status:'True',msg:'Customer logged in.'});
               }

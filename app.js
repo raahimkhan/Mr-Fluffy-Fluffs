@@ -12,7 +12,7 @@ const mongoose      = require('mongoose');
 
 
 const session_options = {
-    secret:'some_(^^)_daMn$-&Goods3cr3t',
+    secret:process.env.SESSION_SECRET,
     saveUninitialized:true,
     resave:true,
     name:'fluffy_fluffs_session_id',
@@ -20,7 +20,7 @@ const session_options = {
       httpOnly:true,
       secure:false, // for production use true
       sameSite:true,
-      maxAge:86400 // valid for one day only
+      maxAge:86400 // valid for 30 minutes only
     },
     store:new session_store({mongooseConnection:mongoose.connection}),
     genid: function(req) {

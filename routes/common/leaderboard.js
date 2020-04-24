@@ -1,22 +1,24 @@
 const mongoose = require('mongoose');
-const Board = require('../../src/models/LeaderBoard.model');
+const Custom   = require('../../src/models/Custom.model');
+const Review   = require('../../src/models/Review.model');
 
-const getAll = (req,res) => {
+const get = (req,res) => {
 
-  try {
-    Board.find({}, (err,board) => {
-      if(err) {
-        res.json({status:'False',msg:'Leader Board is empty.'});
+  Review.find({}, (err,reviews) => {
+    if(err) {
+      res.json({status:'False',msg:'Internal Database Error'});
+    }
+    else {
+      if(reviews) {
+          console.log(reviews.length());
+          res.json({status:'True',msg:'Leaderboard'});
       }
       else {
-        res.json({status:'True',msg:'Leader Board.',data:board});
+        res.json({status:'False',msg:'No reviews present.'});
       }
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+    }
+  });
 
-}
+};
 
-module.exports = {getAll};
+module.exports = {get};
