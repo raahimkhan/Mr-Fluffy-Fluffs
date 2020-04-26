@@ -8,6 +8,7 @@ Customer= new schema({
 	PassHash:String,
 	Address:String,
 	Email:String,
-	MobileNo:Number
+	MobileNo:Number,
+	Verified:Boolean
 })
 module.exports=mongoose.model('Customer',Customer)

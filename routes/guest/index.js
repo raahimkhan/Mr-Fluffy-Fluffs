@@ -1,14 +1,20 @@
 const router = require('express').Router();
 const {uuid} = require('uuidv4');
 
-router.get('/login', (req,res) => {
-  req.session.GuestId = uuid();
-  res.json({status:'True',msg:`Guest logged in. Guest ID:${req.session.GuestId}`});
+router.post('/login', (req,res) => {
+  if(req.session.GuestId) {
+    res.json({status:'False',msg:'Guest already logged in.',GuestId:req.session.GuestId});
+  }
+  else {
+    req.session.GuestId = uuid();
+    console.log(req.session);
+    res.json({status:'True',msg:`Guest logged in. Guest ID:${req.session.GuestId}`,GuestId:req.session.GuestId});
+  }
+
 });
 
-router.get('/logout', (req,res) => {
+router.post('/logout', (req,res) => {
   if(req.session.GuestId) {
-    req.session.store.destroy(req.session.sid);
     req.session.destroy();
     res.json({status:'True',msg:'Guest logged out.'});
   }

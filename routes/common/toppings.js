@@ -1,135 +1,50 @@
 const mongoose = require('mongoose');
+const utility  = require('../../src/Utility');
 const Topping  = require('../../src/models/Toppings.model');
 
 const get = (req,res) => {
 
-  try {
-
-    Topping.findOne({_id:req.params.name}, (err,topping) => {
-      if(err) {
-        res.json({status:'False',msg:'Requested topping not present.'});
-      }
-      else {
-        if(topping) {
-          res.json({status:'True',msg:'Topping found.',data:topping});
-        }
-        else {
-          res.json({status:'False',msg:'Requested topping not present.'});
-        }
-      }
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.getOne(Topping,{_id:req.params.name})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const getAll = (req,res) => {
 
-  try {
-    Topping.find({}, (err,topping) => {
-      res.json({status:'True', msg:'Toppings', data:topping});
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.getAll(Topping,{})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const put = (req,res) => {
 
-  try {
+  let data =   {
+    _id   : new mongoose.Types.ObjectId(),
+    Name  : req.body.topping.Name,
+    Price : req.body.topping.Price
+  };
 
-    Topping.findOne({Name:req.body.topping.Name}, (err,topping) => {
-      if(err) {
-        res.json({status:'False',msg:'Requested topping not present.'});
-      }
-      else {
-        if(topping) {
-          res.json({status:'False',msg:'Topping already present.'});
-        }
-        else {
-
-          let newTopping = new Topping(
-
-            {
-            _id   : new mongoose.Types.ObjectId(),
-            Name  : req.body.topping.Name,
-            Price : req.body.topping.Price
-            }
-          );
-          newTopping.save((err,topping) => {
-            if(err) {
-              res.json({status:'False',msg:'Cannot add topping.'});
-            }
-            else {
-              res.json({status:'True',msg:'Topping added.'});
-            }
-          });
-        }
-      }
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.put(Topping,data)
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const patch = (req,res) => {
 
-  try {
-
-    Topping.updateOne({_id:req.params.name},{$set:req.body.topping},{multi:true}, (err,topping) => {
-
-      if(err) {
-        res.json({status:'False',msg:'Topping not present.'});
-      }
-      else {
-        if(topping.updatedCount) {
-          res.json({status:'True',msg:'Topping record updated.'});
-        }
-        else {
-          res.json({status:'False',msg:'Cannot update topping record.'});
-        }
-      }
-
-    });
-
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.patchOne(Topping,{_id:req.params.name},{$set:req.body.topping},{multi:true})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const remove = (req,res) => {
 
-  try {
-
-    Topping.deleteOne({_id:req.params.name}, (err,topping) => {
-
-      if(err) {
-        res.json({status:'False',msg:'Topping not present.'});
-      }
-      else {
-        if(topping.deletedCount) {
-          res.json({status:'True',msg:'Topping record deleted.'});
-        }
-        else {
-          res.json({status:'False',msg:'Topping not present'});
-        }
-      }
-
-    });
-
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
-
+  utility.removeOne(Topping,{_id:req.params.name})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 

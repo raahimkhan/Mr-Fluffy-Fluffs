@@ -1,12 +1,19 @@
 const mongoose = require('mongoose');
+const utility  = require('../../src/Utility');
 const Cart     = require('../../src/models/Cart.model');
 
-const get = (req,res) => {  
-  res.json(`get cart of ${req.params['username']}`);
+const get = (req,res) => {
+
+  let credentials = req.session.Email ? {Email:req.session.Email,PassHash:req.session.PassHash} : {Username:req.session.Username,PassHash:req.session.PassHash};
+
+  utility.getOne(Cart,credentials)
+  .then(cart => res.json({status:'True',msg:'Cart found.',data:cart}))
+  .catch(err => res.json(err));
+
 };
 
 const put = (req,res) => {
-  res.json(`put new item in cart of ${req.params['username']}`);
+  res.json({status:'False',msg:'In development.'});
 };
 
 const remove = (req,res) => {
@@ -14,7 +21,7 @@ const remove = (req,res) => {
 };
 
 const removeAll = (req,res) => {
-  res.json(`remove all items from cart of ${req.params['username']}`);
+
 }
 
 module.exports = {

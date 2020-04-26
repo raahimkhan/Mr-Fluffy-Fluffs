@@ -17,11 +17,12 @@ const session_options = {
     resave:true,
     name:'fluffy_fluffs_session_id',
     cookie: {
+      maxAge:60*60*24*1000, // valid for 30 minutes only
       httpOnly:true,
       secure:false, // for production use true
-      sameSite:true,
-      maxAge:86400 // valid for 30 minutes only
+      sameSite:true
     },
+    rolling:true,
     store:new session_store({mongooseConnection:mongoose.connection}),
     genid: function(req) {
       return uuid();

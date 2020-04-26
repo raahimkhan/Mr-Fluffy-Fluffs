@@ -1,137 +1,54 @@
 const mongoose = require('mongoose');
 const Pancake  = require('../../src/models/Pancake.model');
+const utility  = require('../../src/Utility');
 
 
 const get = (req,res) => {
 
-  try {
-
-    Pancake.findOne({_id:req.params.item}, (err,cake) => {
-      if(err) {
-        res.json({status:'False',msg:'Requested pancake not present.'});
-      }
-      else {
-        if(cake) {
-          res.json({status:'True',msg:'Pancake found.',data:cake});
-        }
-        else {
-          res.json({status:'False',msg:'Requested pancake not present.'});
-        }
-      }
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.getOne(Pancake,{_id:req.params.item})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const getAll = (req,res) => {
 
-  try {
-    Pancake.find({}, (err,cake) => {
-      res.json({status:'True', msg:'Pancakes', data:cake});
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.getAll(Pancake,{})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const put = (req,res) => {
 
-  try {
+  let data = {
+  _id         : new mongoose.Types.ObjectId(),
+  Name        : req.body.pancake.Name,
+  Description : req.body.pancake.Description,
+  Price       : req.body.pancake.Price
+};
 
-    Pancake.findOne({Name:req.body.menu.Name}, (err,cake) => {
-      if(err) {
-        res.json({status:'False',msg:'Requested pancake not present.'});
-      }
-      else {
-        if(cake) {
-          res.json({status:'False',msg:'Pancake already present.'});
-        }
-        else {
+  utility.put(Pancake,data)
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
-          let newPancake = new Pancake(
 
-            {
-            _id         : new mongoose.Types.ObjectId(),
-            Name        : req.body.pancake.Name,
-            Description : req.body.pancake.Description,
-            Price       : req.body.pancake.Price
-            }
-          );
-          newPancake.save((err,cake) => {
-            if(err) {
-              res.json({status:'False',msg:'Cannot add pancake.'});
-            }
-            else {
-              res.json({status:'True',msg:'Pancake added.'});
-            }
-          });
-        }
-      }
-    });
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
 
 };
 
 const patch = (req,res) => {
 
-  try {
-
-    Pancake.updateOne({_id:req.params.item},{$set:req.body.pancake},{multi:true}, (err,cake) => {
-
-      if(err) {
-        res.json({status:'False',msg:'Pancake not present.'});
-      }
-      else {
-        if(cake.updatedCount) {
-          res.json({status:'True',msg:'Pancake record updated.'});
-        }
-        else {
-          res.json({status:'False',msg:'Cannot update pancake record.'});
-        }
-      }
-
-    });
-
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
+  utility.patchOne(Pancake,{_id:req.params.item},{$set:req.body.pancake},{multi:true})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 
 const remove = (req,res) => {
 
-  try {
-
-    Pancake.deleteOne({_id:req.params.item}, (err,cake) => {
-
-      if(err) {
-        res.json({status:'False',msg:'Pancake not present.'});
-      }
-      else {
-        if(cake.deletedCount) {
-          res.json({status:'True',msg:'Pancake record deleted.'});
-        }
-        else {
-          res.json({status:'False',msg:'Pancake not present'});
-        }
-      }
-
-    });
-
-  }
-  catch(Error) {
-    res.json({status:'False',msg:'Internal Server Error.'});
-  }
-
+  utility.removeOne(Pancake,{_id:req.params.item})
+  .then(data => res.json(data))
+  .catch(err => res.json(err));
 
 };
 

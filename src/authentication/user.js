@@ -1,26 +1,26 @@
 const mongoose = require('mongoose');
+const utility = require('../Utility');
 const Customer = require('../models/Customer.model');
 
 const userAuth = (req,res,next) => {
 
-  if(req.session.Email && req.session.PassHash) {
-    Customer.findOne({Email:req.session.Email,PassHash:req.session.PassHash}, (err,customer) => {
-      if(err) {
-        res.json({status:'False',msg:'Internal Database Error.'});
-      }
-      else {
-        if(customer) {
+    if((req.session.Username || req.session.Email) && req.session.PassHash)
+    {
+      let credentials = req.session.Email ? {Email:req.session.Email,PassHash:req.session.PassHash} : {Username:req.session.Username,PassHash:req.session.PassHash}
+
+      utility.getOne(Customer,credentials)
+      .then(customer => {
+        if(customer.Verified) {
           next();
         }
         else {
-          req.session.destroy();
-          res.json({status:'False',msg:'You must be logged in to access this feature.'});
+          res.json({status:'False',msg:'Phone number verification required.'});
         }
-      }
-
-    });
+      })
+      .catch(err => res.json(err));
   }
-  else {
+  else
+   {
     res.json({status:'False', msg:'You must be logged in to access this feature.'});
     return;
   }
