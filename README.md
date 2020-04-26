@@ -81,8 +81,8 @@ _Every routes requiring parameters e.g [/:id], must be provided with_ **mongoose
 
 > Guest
 
-- **get** /api/guest/login 
-- **get** /api/guest/logout
+- **post** /api/guest/login 
+- **post** /api/guest/logout
 
 ## Requests
 All the requests requiring body parameters to pass to api with request should be passed as JSON object.
