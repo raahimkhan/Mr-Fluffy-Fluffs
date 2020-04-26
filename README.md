@@ -25,12 +25,12 @@ _Every routes requiring parameters e.g [/:id], must be provided with_ **mongoose
 
 > Common
 - **get** api/common/menu
-- **get** api/common/:id
-- **get** api/toppings
-- **get** api/toppings/:id
-- **get** api/fillings
-- **get** api/fillings/:id
-- **get** api/custom
+- **get** api/common/menu/:id
+- **get** api/common/toppings
+- **get** api/common/toppings/:id
+- **get** api/common/fillings
+- **get** api/common/fillings/:id
+- **get** api/common/custom
 
 - **put** api/menu ***[Admin]***
 - **put** api/toppings ***[Admin]***
