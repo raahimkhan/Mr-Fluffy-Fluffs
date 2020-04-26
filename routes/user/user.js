@@ -2,8 +2,36 @@ const mongoose = require('mongoose');
 const utility  = require('../../src/Utility');
 const Customer = require('../../src/models/Customer.model');
 const bcrypt   = require('bcrypt');
+const Code    = require('../../src/models/Code.model')
 
+const generate = async (req,res)=>{
+ 
+  if (req.session.Email || req.session.Username){
+    let credentials = req.session.Email ? {customer:req.session.Email} : {customer:req.session.Username};
+    utility.getOne(Code,credentials).then(cod=>{
+      //insert api here (await)
 
+    })
+  .catch(err =>async ()={
+    code= Math.floor(Math.random() * 90000) + 10000
+    //add to db
+    co = new Code({
+      _id : new mongoose.Types.ObjectId(),
+      code : code,
+      customer: credentials.customer
+    })
+    co.ttl = '1h' // lives for two minutes
+    await co.save();
+    //send it through api
+
+  }
+
+  }
+  else{
+    res.json({status:'True',msg:'User not Verified'});
+  }
+  return Math.floor(Math.random() * 90000) + 10000
+}
 const verify = (req,res) => {
   let credentials = req.session.Email ? {Email:req.session.Email,PassHash:req.session.PassHash} : {Username:req.session.Username,PassHash:req.session.PassHash};
   utility.getOne(Customer,credentials)
@@ -12,6 +40,7 @@ const verify = (req,res) => {
       res.json({status:'True',msg:'Customer already verified.'});
     }
     else {
+
       utility.patchOne(Customer,credentials,{$set:{Verified:1}},{multi:true})
       .then(customer => res.json({status:'True',msg:'Customer verified.'}))
       .catch(err => res.json(err));
@@ -71,6 +100,8 @@ const put = (req,res) => {
             Verified : 0
 
           };
+         generate()
+        
           utility.put(Customer,data)
           .then(customer => {
             req.session.Username = req.body.customer.Username;
