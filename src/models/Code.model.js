@@ -6,7 +6,6 @@ Code=new schema({
 	_id: schema.Types.ObjectId,
 	code:Number,
 	customer :String
-
 },
 {
 		timestamps:true

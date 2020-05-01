@@ -2,36 +2,30 @@ const mongoose = require('mongoose');
 const utility  = require('../../src/Utility');
 const Customer = require('../../src/models/Customer.model');
 const bcrypt   = require('bcrypt');
-const Code    = require('../../src/models/Code.model')
+const Code   = require('../../src/models/Code.model')
+const twilio = require('twilio')(
+  'ACb2072416a86aefe3b8916b81ad59123d',
+  'b8318690acc795bcf97927c599f62b93'  
+)
 
-const generate = async (req,res)=>{
- 
-  if (req.session.Email || req.session.Username){
-    let credentials = req.session.Email ? {customer:req.session.Email} : {customer:req.session.Username};
-    utility.getOne(Code,credentials).then(cod=>{
-      //insert api here (await)
+const generate= (x) => Math.floor(Math.random(1,9) * 99999 + 10000)
 
-    })
-  .catch(err =>async ()={
-    code= Math.floor(Math.random() * 90000) + 10000
-    //add to db
-    co = new Code({
-      _id : new mongoose.Types.ObjectId(),
-      code : code,
-      customer: credentials.customer
-    })
-    co.ttl = '1h' // lives for two minutes
-    await co.save();
-    //send it through api
-
+const send_login_sms=(x,target,res)=>{
+  code= generate(x)
+  twilio.messages.create({
+  from:'+12512996973',
+  to: target,
+  body:`Mr.Fluffy Fluffs\n Login Verification Code: ${code.toString()}`
+},(err,message)=>{
+  if (err){
+   res.json({status:'False',msg:'MobileNo not reachable'})
   }
-
+  else if (message){
+   res.json({status:'True',code:code})
   }
-  else{
-    res.json({status:'True',msg:'User not Verified'});
-  }
-  return Math.floor(Math.random() * 90000) + 10000
+})
 }
+
 const verify = (req,res) => {
   let credentials = req.session.Email ? {Email:req.session.Email,PassHash:req.session.PassHash} : {Username:req.session.Username,PassHash:req.session.PassHash};
   utility.getOne(Customer,credentials)
@@ -40,10 +34,15 @@ const verify = (req,res) => {
       res.json({status:'True',msg:'Customer already verified.'});
     }
     else {
-
+      local = 53683
+      if (req.body.customer.code == local){
       utility.patchOne(Customer,credentials,{$set:{Verified:1}},{multi:true})
       .then(customer => res.json({status:'True',msg:'Customer verified.'}))
       .catch(err => res.json(err));
+    }
+    else{
+      res.json({status:'False',msg:'Code Mismatch'})
+    }
     }
   })
   .catch(err => res.json(err));
@@ -69,6 +68,7 @@ const patch = (req,res) => {
 };
 
 const put = (req,res) => {
+  console.log(typeof req.body.customer.MobileNo)
 
   if(!(req.body.customer.Email && req.body.customer.Username && req.body.customer.PassHash && req.body.customer.MobileNo))
   {
@@ -82,12 +82,14 @@ const put = (req,res) => {
     utility.getOne(Customer,{Username:req.body.customer.Username})
     .then(customer => res.json({status:'False',msg:'Username already present.'}))
     .catch(err => {
-      const salt_iterations = 10;
+
+    //hashing
+     const salt_iterations = 10;
       bcrypt.hash(req.body.customer.PassHash,salt_iterations,(err,hash) => {
         if(err) {
           res.json({status:'False',msg:'Error hashing user password.'});
         }
-        else {
+        else{
           let data = {
 
             _id      : new mongoose.Types.ObjectId(),
@@ -100,20 +102,19 @@ const put = (req,res) => {
             Verified : 0
 
           };
-         generate()
-        
-          utility.put(Customer,data)
-          .then(customer => {
+          utility.put(Customer,data).then(customer => {
             req.session.Username = req.body.customer.Username;
             req.session.PassHash = hash;
-            res.json({status:'True',msg:'Customer added and logged in. Verification Required for further access.'});
-          })
-          .catch(err => res.json(err));
+            //send code
+            (async function (){
+            await send_login_sms(5,req.body.customer.MobileNo,res)
+            }());
+          
+          }).catch(err => res.json(err))
         }
-      });
-    });
+    }); 
   });
-
+});
 };
 
 const get = (req,res) => {

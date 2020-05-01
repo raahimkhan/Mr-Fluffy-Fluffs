@@ -28,7 +28,7 @@
     "mongoose-ttl": "0.0.3",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.3",
-    "twilio": "^3.42.2",
+    "twilio": "^3.43.0",
     "uuidv4": "^6.0.7"
   }
 }
