@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http ;
 import 'dart:collection';
 import 'package:flutter_progress_button/flutter_progress_button.dart' ;
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
 
 class SignupScreen3 extends StatefulWidget {
   @override
@@ -20,7 +23,6 @@ class _SignupScreen3State extends State<SignupScreen3> {
   Map data = {} ;
   String username ;
   String password ;
-  String fullname ;
   var body ;
 
   void init() {
@@ -30,20 +32,17 @@ class _SignupScreen3State extends State<SignupScreen3> {
     blockSizeVertical = screenHeight / 100;
   }
 
-  Future <String> user_login() async {
-    Map<String, String> headers = new HashMap() ;
-    headers['Accept'] = 'application/json' ;
-    headers['Content-type'] = 'application/json' ;
-
-    http.Response response = await http.post(
-        'http://mr-fluffy-fluffs.herokuapp.com/api/user/login',
-        headers: headers,
-        body: jsonEncode(body),
-        encoding: Encoding.getByName('utf-8')
+  var url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/login' ;
+  // This function sends user login request to the API
+  Future <dynamic> user_login() async {
+    var response = await Requests.post(
+        url,
+        body: body,
+        bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 
-    Map data = jsonDecode(response.body) ;
-    return data['msg'] ;
+    dynamic j = response.json() ;
+    return j ;
   }
 
   AlertDialog display_result(String message) {
@@ -59,9 +58,8 @@ class _SignupScreen3State extends State<SignupScreen3> {
     init() ;
 
     data = ModalRoute.of(context).settings.arguments ;
-    username = data['type'] ;
-    password = data['pass'] ;
-    fullname = data['name'] ;
+    username = data['username'] ;
+    password = data['password'] ;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -117,7 +115,7 @@ class _SignupScreen3State extends State<SignupScreen3> {
                   height: 54,
                   borderRadius: 30.0,
                   onPressed: () async {
-                    String resp ;
+                    dynamic resp ;
                     AlertDialog msg ;
 
                     body = { "customer":{"Username":username, "PassHash":password} } ;
@@ -127,8 +125,12 @@ class _SignupScreen3State extends State<SignupScreen3> {
 
                     // After [onPressed], it will trigger animation running backwards, from end to beginning
                     return () {
-                      if (resp == 'Customer Already logged in.') {
-                        msg = display_result('Already logged in.') ;
+                      if (resp['status'] == 'False' && resp['msg'].contains('already logged in')) {
+                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                      }
+
+                      else if (resp['status'] == 'False' && !resp['msg'].contains('already logged in')) {
+                        msg = display_result(resp['msg']) ;
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -137,45 +139,12 @@ class _SignupScreen3State extends State<SignupScreen3> {
                         ) ;
                       }
 
-                      else if (resp == 'Credentials has been changed. Please log in agains.') {
-                        msg = display_result('Credentials has been changed. Please log in agains.') ;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return msg ;
-                          },
-                        ) ;
-                      }
-
-                      else if (resp == '') {
-                        // do nothing as form data not validated
-                      }
-
-                      else if (resp == 'Invalid Username or Password.') {
-                        msg = display_result('Invalid Username or Password.') ;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return msg ;
-                          },
-                        ) ;
-                      }
-
-                      else if (resp == 'Internal Server Error.') {
-                        msg = display_result('Service Unavailable. Please try again later.') ;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return msg ;
-                          },
-                        ) ;
+                      else if (resp['status'] == 'True') {
+                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
                       }
 
                       else {
-                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
-//                            arguments: {
-//                              'type': fullname,
-//                            }) ;
+                        // Do nothing as form data has not been validated
                       }
 
                     };

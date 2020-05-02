@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:se7/cart_1.dart';
-import 'package:se7/extra.dart';
+import 'package:fluffs/cart_1.dart';
+import 'package:fluffs/extra.dart';
 
 List orderList = [
   {

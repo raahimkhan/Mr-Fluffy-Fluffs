@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' ;
 import 'dart:async';
-import 'package:http/http.dart' as http ;
 import 'dart:collection';
 import 'package:flutter_progress_button/flutter_progress_button.dart' ;
 import 'package:requests/requests.dart' ;
@@ -13,6 +12,14 @@ class OpeningScreen extends StatefulWidget {
 }
 
 class _OpeningScreenState extends State<OpeningScreen> {
+
+  AlertDialog display_result(String message) {
+    AlertDialog alert = AlertDialog (
+      content: Text(message),
+    ) ;
+
+    return alert ;
+  }
 
   // Variables to store screen details
   double screenWidth;
@@ -34,20 +41,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
   String url = 'http://mr-fluffy-fluffs.herokuapp.com/api/guest/login' ;
 
   // This function sends guest login request to the API
-  Future <String> guest_login() async {
+  Future <dynamic> guest_login() async {
     var response = await Requests.post(
         url,
         body: {},
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
-    response.raiseForStatus();
-
 
     dynamic j = response.json() ;
-    return j['msg'] ;
-
-    // response body contains status code telling true or false for successful or failed connections
-    // msg tells the nature of the status code
+    return j ;
   }
 
   @override
@@ -175,14 +177,35 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 height: 53,
                 borderRadius: 30.0,
                 onPressed: () async {
-                  await Future.delayed(
-                        const Duration(milliseconds: 2000), () => guest_login()) ;
+                  dynamic resp ;
+                  resp = await Future.delayed(
+                      const Duration(milliseconds: 2000), () => guest_login()) ;
                   // After [onPressed], it will trigger animation running backwards, from end to beginning
                   return () {
-                    Navigator.of(context).pushReplacementNamed('/home_screen',
-                    arguments: {
-                      'type': 'Guest', // Here i am just sending type of user. There are two. Either guest or actual registered user.
-                    }) ;
+
+                    if (resp['status'] == 'False' && resp['msg'].contains('already logged in') && !resp['msg'].contains('Cannot login as a guest now')) {
+                      // If already logged in let guess bypass the opening screen to home page
+                      Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                    }
+
+                    else if (resp['status'] == 'True') {
+                      Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                    }
+
+                    else if (resp['status'] == 'False' && resp['msg'].contains('User already logged in. Cannot login as a guest now.')) {
+                      AlertDialog msg = display_result(resp['msg']) ;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return msg ;
+                        },
+                      ) ;
+                    }
+
+                    else if (resp['status'] == "True") {
+                      Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                    }
+
                   };
                 },
               ),

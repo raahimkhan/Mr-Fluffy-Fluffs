@@ -71,21 +71,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var body ; // to store username and password as a json object to send to API for logging in
 
+  var url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/login' ;
   // This function sends user login request to the API
-  Future <String> user_login() async {
+  Future <dynamic> user_login() async {
     var response = await Requests.post(
-        'http://mr-fluffy-fluffs.herokuapp.com/api/user/login',
+        url,
         body: body,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
-    response.raiseForStatus();
 
     dynamic j = response.json() ;
-    print(j) ;
-    return j['msg'] ;
-
-    // response body contains status code telling true or false for successful or failed connections
-    // msg tells the nature of the status code
+    return j ;
   }
 
   @override
@@ -245,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 53,
                   borderRadius: 30.0,
                   onPressed: () async {
-                    String resp ;
+                    dynamic resp ;
                     AlertDialog msg ;
                     if (_formKey.currentState.validate()) {
 
@@ -268,8 +264,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       // Following are just the conditions (responses) from api according which user would either log in
                       // or displayed with some alert prompt message
 
-                      if (resp == 'Credentials has been changed. Please log in agains.') {
-                        msg = display_result('Credentials has been changed. Please log in agains.') ;
+                      if (resp['status'] == 'False' && resp['msg'].contains('already logged in')) {
+                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                      }
+
+                      else if (resp['status'] == 'False' && !resp['msg'].contains('already logged in')) {
+                        msg = display_result(resp['msg']) ;
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -278,40 +278,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ) ;
                       }
 
-                      else if (resp == '') {
-                       // do nothing as form data not validated
-                      }
-
-                      else if (resp == 'Invalid username or password.') {
-                        msg = display_result('Invalid Username or Password.') ;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return msg ;
-                          },
-                        ) ;
-                      }
-
-                      else if (resp == 'Internal Server Error.') {
-                        msg = display_result('Service Unavailable. Please try again later.') ;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return msg ;
-                          },
-                        ) ;
-                      }
-
-                      else if (username == '' || password == '') {
-
+                      else if (resp['status'] == 'True') {
+                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
                       }
 
                       else {
-                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
-//                            arguments: {
-//                              'type': username, // just passing data across next screen
-//                            }) ;
+                        // Do nothing as form data has not been validated
                       }
+
                     };
                   },
                 ),
@@ -324,13 +298,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment(0.0, 0.65),
                 child: FlatButton(
                   onPressed: () {
-                    AlertDialog msg = display_result('This feature is in development.') ;
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return msg ;
-                      },
-                    ) ;
                     //Navigator.of(context).pushReplacementNamed('/forgotpassword_screen1') ;
                   },
                   child: Text(
