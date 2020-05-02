@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:se7/servicemanage.dart';
+import 'package:fluffs/servicemanage.dart';
 
 class AdminHome extends StatefulWidget {
   @override

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluffs/pin_entry_text_field.dart';
 import 'package:flutter_progress_button/flutter_progress_button.dart' ;
 import 'dart:async';
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
 
 class SignupScreen2 extends StatefulWidget {
   @override
@@ -18,11 +21,6 @@ class _SignupScreen2State extends State<SignupScreen2> {
 
   Map data = {} ;
 
-  // Variables transfered from 'SignupScreen1'
-  String username ;
-  String password ;
-  String fullname ;
-
   void init() {
     screenWidth = MediaQuery.of(context).size.width ;
     screenHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - kToolbarHeight - kBottomNavigationBarHeight ;
@@ -30,24 +28,61 @@ class _SignupScreen2State extends State<SignupScreen2> {
     blockSizeVertical = screenHeight / 100;
   }
 
-  int pin ;
+  AlertDialog display_result(String message) {
+    AlertDialog alert = AlertDialog (
+      content: Text(message),
+    ) ;
 
-  AlertDialog alert = AlertDialog (
-    content: Text("Invalid Pin!"),
-  ) ;
+    return alert ;
+  }
 
-  AlertDialog alertempty = AlertDialog (
-    content: Text("Please enter complete pin!"),
-  ) ;
+  int pin  = 000000 ;
+  int test ;
+
+  String number ;
+  String username ;
+  String password ;
+  int twilio_code ;
+  bool rs = false ; // whether resend button used or not
+
+  var verify_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/verify' ;
+
+  Future <dynamic> verify() async {
+    var response = await Requests.post(
+      verify_url,
+    ) ;
+
+    dynamic j = response.json() ;
+    return j ;
+  }
+
+  var resend_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/resend' ;
+
+  Future <dynamic> resend() async {
+    var response = await Requests.post(
+        resend_url,
+        body: {
+          "customer":{
+            "MobileNo": number
+          }
+        },
+        bodyEncoding: RequestBodyEncoding.JSON
+    ) ;
+
+    dynamic j = response.json() ;
+
+    return j ;
+  }
 
   @override
   Widget build(BuildContext context) {
     init() ;
 
     data = ModalRoute.of(context).settings.arguments ;
-    username = data['type'] ;
-    password = data['pass'] ;
-    fullname = data['name'] ;
+    twilio_code = data['code'] ;
+    number = data['number'] ;
+    username = data['username'] ;
+    password = data['password'] ;
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -85,7 +120,7 @@ class _SignupScreen2State extends State<SignupScreen2> {
                 children: <Widget>[
 
                   Text(
-                    'Please Enter the 6-digit',
+                    'Please Enter the 5-digit',
                     style: TextStyle(
                       fontSize: 38,
                       fontFamily: 'NunitoSansSemiBold',
@@ -114,11 +149,9 @@ class _SignupScreen2State extends State<SignupScreen2> {
                   SizedBox(height: 43) ,
 
                   PinEntryTextField(
-                    fields: 6,
+                    fields: 5,
                     showFieldAsBox: false,
                     onSubmit: (String p) {
-                      p = p.substring(1) ;
-                      p = '+92' + p ;
                       pin = int.parse(p) ;
                     },
                   ),
@@ -143,18 +176,44 @@ class _SignupScreen2State extends State<SignupScreen2> {
                     height: 54,
                     borderRadius: 30.0,
                     onPressed: () async {
-                        await Future.delayed(
-                            const Duration(milliseconds: 2000), () => {}) ;
+                      dynamic resp ;
+                      bool verified = false ;
+                      if (rs == false) {
+                        if (pin == twilio_code) {
+                          verified = true ;
+                          resp = await Future.delayed(
+                              const Duration(milliseconds: 2000), () => verify()) ;
+                        }
+                      }
 
+                      else {
+                        if (pin == test) {
+                          verified = true ;
+                          resp = await Future.delayed(
+                              const Duration(milliseconds: 2000), () => verify()) ;
+                        }
+                      }
 
                       // After [onPressed], it will trigger animation running backwards, from end to beginning
                       return () {
+                        if (verified == false) {
+                          AlertDialog msg = display_result('Invalid pin. Please enter again.') ;
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return msg ;
+                            },
+                          ) ;
+                        }
+
+                        else {
                           Navigator.of(context).pushReplacementNamed('/signup_screen3',
-                          arguments: {
-                            'type': username,
-                            'name': fullname,
-                            'pass': password,
-                          }) ;
+                              arguments: {
+                                'username': username,
+                                'password': password,
+                              }) ;
+                        }
+
                       };
                     },
                   ),
@@ -162,7 +221,15 @@ class _SignupScreen2State extends State<SignupScreen2> {
                   SizedBox(height: 20) ,
 
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      dynamic resp ;
+                      resp = await Future.delayed(
+                          const Duration(milliseconds: 2000), () => resend()) ;
+                      setState(() {
+                        rs = true ;
+                        test = resp['code'] ;
+                      });
+                    },
                     child: Text(
                       'Resend SMS',
                       style: TextStyle(
