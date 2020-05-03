@@ -61,16 +61,6 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pushReplacementNamed('/signup_screen1') ;
-          },
-          child: Icon(
-            Icons.keyboard_arrow_left,
-            size: 45,
-            color: Color(0xffbb5e1e),
-          ),
-        ),
       ),
 
       body: Form(

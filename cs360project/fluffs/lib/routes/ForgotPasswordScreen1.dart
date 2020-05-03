@@ -77,7 +77,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
         backgroundColor: Colors.white,
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushReplacementNamed('/signup_screen1') ;
+            Navigator.of(context).pushReplacementNamed('/forgotpassword') ;
           },
           child: Icon(
             Icons.keyboard_arrow_left,
