@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:fluffs/pin_entry_text_field.dart';
 import 'package:flutter_progress_button/flutter_progress_button.dart' ;
+import 'dart:async';
 import 'package:validators/validators.dart' ;
 import 'dart:collection';
 import 'package:requests/requests.dart' ;
 import 'package:shared_preferences/shared_preferences.dart' ;
 
-class ForgotPasswordScreen2 extends StatefulWidget {
+class ForgotPassword extends StatefulWidget {
   @override
-  _ForgotPasswordScreen2State createState() => _ForgotPasswordScreen2State();
+  _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
-class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
+class _ForgotPasswordState extends State<ForgotPassword> {
 
   double screenWidth;
   double screenHeight;
@@ -24,30 +26,30 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
     blockSizeVertical = screenHeight / 100;
   }
 
-  String password ;
-  String password2 ;
-
-  var body ;
-
-  var patch_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/verify-forget' ;
-
-  Future <dynamic> change_password() async {
-    var response = await Requests.patch(
-        patch_url,
-        body: body,
-        bodyEncoding: RequestBodyEncoding.JSON
-    ) ;
-
-    dynamic j = response.json() ;
-    return j ;
-  }
-
   AlertDialog display_result(String message) {
     AlertDialog alert = AlertDialog (
       content: Text(message),
     ) ;
 
     return alert ;
+  }
+
+  String username ;
+  String email ;
+  String mobile ;
+  var body ;
+
+  var forget_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/forget' ;
+
+  Future <dynamic> forgot() async {
+    var response = await Requests.post(
+        forget_url,
+        body: body,
+        bodyEncoding: RequestBodyEncoding.JSON
+    ) ;
+
+    dynamic j = response.json() ;
+    return j ;
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>() ;
@@ -63,7 +65,7 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
         backgroundColor: Colors.white,
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushReplacementNamed('/signup_screen1') ;
+            Navigator.of(context).pushReplacementNamed('/login_screen') ;
           },
           child: Icon(
             Icons.keyboard_arrow_left,
@@ -93,25 +95,29 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
                       color: Colors.white,
                       width: 320,
                       child: TextFormField(
-                        obscureText: true,
                         validator: (String value) {
                           if (value.isEmpty) {
-                            return "Password can't be empty" ;
+                            return "Username can't be empty" ;
                           }
 
-                          if (value.length < 8) {
-                            return "Password can't be less than 8 charachters" ;
+                          if (value.length < 3) {
+                            return "Username can't be less than 3 charachters" ;
                           }
+
+                          if (isInt(value)) {
+                            return "Username can't contain integers only" ;
+                          }
+
                           return null ;
                         },
                         autofocus: true,
-                        onChanged: (String pw){
+                        onChanged: (String user){
                           setState(() {
-                            password = pw ;
+                            username = user ;
                           });
                         },
                         decoration: InputDecoration(
-                          hintText: "New Password",
+                          hintText: "Username",
                           hintStyle: TextStyle(
                             color: Colors.black,
                             fontSize: 19,
@@ -127,25 +133,64 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
                   Container(
                     width: 320,
                     child: TextFormField(
-                      obscureText: true,
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "This field can't be empty" ;
+                          return "Email can't be empty" ;
                         }
 
-                        if (value.length < 8 || password2 != password) {
-                          return "Passwords don't match" ;
+                        if(!isEmail(value)) {
+                          return "Enter a valid email address" ;
                         }
+
                         return null ;
                       },
                       autofocus: true,
-                      onChanged: (String pw2){
+                      onChanged: (String em){
                         setState(() {
-                          password2 = pw2 ;
+                          email = em ;
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: "Confirm Password",
+                        hintText: "Email",
+                        hintStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: 19,
+                          fontFamily: 'NunitoSansLight',
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+
+                  Container(
+                    width: 320,
+                    child: TextFormField(
+                      validator: (String value) {
+                        if (value.isEmpty) {
+                          return "Phone number can't be empty" ;
+                        }
+
+                        if (value.length < 11) {
+                          return "Phone number can't be less than 11 digits" ;
+                        }
+
+                        if (isAlpha(value)) {
+                          return "Phone number can't contain letters" ;
+                        }
+
+                        return null ;
+                      },
+                      autofocus: true,
+                      onChanged: (String mob){
+                        setState(() {
+                          mobile = mob ;
+                          mobile = mobile.substring(1) ;
+                          mobile = '+92' + mobile ;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Phone number",
                         hintStyle: TextStyle(
                           color: Colors.black,
                           fontSize: 19,
@@ -161,7 +206,7 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
                     animate: true,
                     color: Color(0xffbb5e1e),
                     defaultWidget: const Text(
-                      'Change Password',
+                      'Submit',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 21.0,
@@ -175,11 +220,15 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
                     height: 53,
                     borderRadius: 30.0,
                     onPressed: () async {
+
                       dynamic resp ;
+                      bool verified = false ;
+
                       if (_formKey.currentState.validate()) {
-                        body = { "customer":{ "PassHash":password} } ;
+                        verified = true ;
+                        body = { "customer":{ "Username":username, "Email":email, "MobileNo":mobile } } ;
                         resp = await Future.delayed(
-                            const Duration(milliseconds: 5000), () => change_password()) ;
+                            const Duration(milliseconds: 6000), () => forgot()) ;
                       }
 
                       // After [onPressed], it will trigger animation running backwards, from end to beginning
@@ -188,26 +237,23 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
                         if (resp['status'] == 'False') {
                           AlertDialog msg = display_result(resp['msg']) ;
                           showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return msg ;
+                          context: context,
+                          builder: (BuildContext context) {
+                          return msg ;
                             },
                           ) ;
                         }
 
                         else if (resp['status'] == 'True') {
-                          AlertDialog msg = display_result(resp['msg']) ;
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return msg ;
-                            },
-                          ) ;
-                          Navigator.of(context).pushReplacementNamed('/login_screen') ;
+                          Navigator.of(context).pushReplacementNamed('/forgotpassword_screen1',
+                          arguments: {
+                            'code': resp['code'],
+                            'number': mobile
+                          }) ;
                         }
 
                         else {
-                          // Do nothing as form data has not been validated yet
+                          // do nothing as form data has not been validated
                         }
 
                       };
@@ -224,3 +270,4 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
     );
   }
 }
+

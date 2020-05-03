@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_progress_button/flutter_progress_button.dart' ;
-import 'dart:async' ;
-
-//This is an official flutter package/library
-// Code was forked from here: https://github.com/prestigegodson/pin-entry-text-field/blob/master/pin_entry_text_field/lib/pin_entry_text_field.dart
-// Dependency has been added to yaml file
 import 'package:fluffs/pin_entry_text_field.dart';
+import 'package:flutter_progress_button/flutter_progress_button.dart' ;
+import 'dart:async';
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
 
 class ForgotPasswordScreen1 extends StatefulWidget {
   @override
@@ -14,10 +13,13 @@ class ForgotPasswordScreen1 extends StatefulWidget {
 
 class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
 
+  // screen details
   double screenWidth;
   double screenHeight;
   double blockSizeHorizontal;
   double blockSizeVertical;
+
+  Map data = {} ;
 
   void init() {
     screenWidth = MediaQuery.of(context).size.width ;
@@ -26,38 +28,47 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
     blockSizeVertical = screenHeight / 100;
   }
 
-  int pin ;
+  AlertDialog display_result(String message) {
+    AlertDialog alert = AlertDialog (
+      content: Text(message),
+    ) ;
 
-  AlertDialog alert = AlertDialog (
-    content: Text("Invalid Pin!"),
-  ) ;
+    return alert ;
+  }
 
-  AlertDialog alertempty = AlertDialog (
-    content: Text("Please enter complete pin!"),
-  ) ;
+  int pin  = 000000 ;
+  int test ;
 
-  int check (int code) {
+  String number ;
+  int twilio_code ;
+  bool rs = false ; // whether resend button used or not
 
-    String str = code.toString() ;
-    int length = str.length ;
-    print(length) ;
+  var resend_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/resend' ;
 
-    if (length != 5) {
-      return 2 ;
-    }
+  Future <dynamic> resend() async {
+    var response = await Requests.post(
+        resend_url,
+        body: {
+          "customer":{
+            "MobileNo": number
+          }
+        },
+        bodyEncoding: RequestBodyEncoding.JSON
+    ) ;
 
-    if (code == 12345) {
-      return 1 ; // valid
-    }
+    dynamic j = response.json() ;
 
-    else  {
-      return 0 ; // not valid
-    }
+    return j ;
   }
 
   @override
   Widget build(BuildContext context) {
     init() ;
+
+    data = ModalRoute.of(context).settings.arguments ;
+    twilio_code = data['code'] ;
+    number = data['number'] ;
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
@@ -66,7 +77,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
         backgroundColor: Colors.white,
         leading: GestureDetector(
           onTap: () {
-            Navigator.of(context).pushReplacementNamed('/opening_screen') ;
+            Navigator.of(context).pushReplacementNamed('/signup_screen1') ;
           },
           child: Icon(
             Icons.keyboard_arrow_left,
@@ -89,118 +100,124 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
             height: blockSizeVertical * 65,
             width: blockSizeHorizontal * 100,
             color: Colors.white,
-            child: SingleChildScrollView(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
 
-                    Text(
-                      'Please Enter the 5-digit',
-                      style: TextStyle(
-                        fontSize: 38,
-                        fontFamily: 'NunitoSansSemiBold',
-                        color: Color(0xffbb5e1e),
-                      ),
-                    ),
-
-                    Text(
-                      'verification code sent',
-                      style: TextStyle(
-                        fontSize: 38,
-                        fontFamily: 'NunitoSansSemiBold',
-                        color: Color(0xffbb5e1e),
-                      ),
-                    ),
-
-                    Text(
-                      'on your Email',
-                      style: TextStyle(
-                        fontSize: 38,
-                        fontFamily: 'NunitoSansSemiBold',
-                        color: Color(0xffbb5e1e),
-                      ),
-                    ),
-
-                    SizedBox(height: 43) ,
-
-                    PinEntryTextField(
-                      fields: 5,
-                      showFieldAsBox: false,
-                      onSubmit: (String p) {
-                        pin = int.parse(p) ;
-                      },
-                    ),
-
-                    SizedBox(height: 55) ,
-
-                    ProgressButton(
-                      animate: true,
+                  Text(
+                    'Please Enter the 5-digit',
+                    style: TextStyle(
+                      fontSize: 38,
+                      fontFamily: 'NunitoSansSemiBold',
                       color: Color(0xffbb5e1e),
-                      defaultWidget: const Text(
-                        'Submit',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 23.0,
-                          fontFamily: 'NunitoSansSemiBold',
-                        ),
-                      ),
-                      progressWidget: const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                      width: 190,
-                      height: 54,
-                      borderRadius: 30.0,
-                      onPressed: () async {
-                        int status = 2 ;
-                        status = await Future.delayed(
-                            const Duration(milliseconds: 3000), () => check(pin)) ;
-
-
-                        // After [onPressed], it will trigger animation running backwards, from end to beginning
-                        return () {
-                          if (status == 2) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return alertempty ;
-                              },
-                            ) ;
-                          }
-
-                          else if (status == 1) {
-                            print('Welcome') ;
-                            Navigator.of(context).pushReplacementNamed('/forgotpassword_screen2') ;
-                          }
-
-                          else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return alert ;
-                              },
-                            ) ;
-                          }
-
-                        };
-                      },
                     ),
+                  ),
 
-                    SizedBox(height: 20) ,
+                  Text(
+                    'verification code sent',
+                    style: TextStyle(
+                      fontSize: 38,
+                      fontFamily: 'NunitoSansSemiBold',
+                      color: Color(0xffbb5e1e),
+                    ),
+                  ),
 
-                    FlatButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Resend Email',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontFamily: 'NunitoSansLight',
-                          color: Colors.black,
-                        ),
+                  Text(
+                    'on your SMS',
+                    style: TextStyle(
+                      fontSize: 38,
+                      fontFamily: 'NunitoSansSemiBold',
+                      color: Color(0xffbb5e1e),
+                    ),
+                  ),
+
+                  SizedBox(height: 43) ,
+
+                  PinEntryTextField(
+                    fields: 5,
+                    showFieldAsBox: false,
+                    onSubmit: (String p) {
+                      pin = int.parse(p) ;
+                    },
+                  ),
+
+                  SizedBox(height: 55) ,
+
+                  ProgressButton(
+                    animate: true,
+                    color: Color(0xffbb5e1e),
+                    defaultWidget: const Text(
+                      'Submit',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 23.0,
+                        fontFamily: 'NunitoSansSemiBold',
                       ),
                     ),
+                    progressWidget: const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                    width: 190,
+                    height: 54,
+                    borderRadius: 30.0,
+                    onPressed: () async {
+                      dynamic resp ;
+                      bool verified = false ;
+                      if (rs == false) {
+                        if (pin == twilio_code) {
+                          verified = true ;
+                        }
+                      }
 
-                  ]
-              ),
+                      else {
+                        if (pin == test) {
+                          verified = true ;
+                        }
+                      }
+
+                      // After [onPressed], it will trigger animation running backwards, from end to beginning
+                      return () {
+                        if (verified == false) {
+                          AlertDialog msg = display_result('Invalid pin. Please enter again.') ;
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return msg ;
+                            },
+                          ) ;
+                        }
+
+                        else {
+                          Navigator.of(context).pushReplacementNamed('/forgotpassword_screen2') ;
+                        }
+
+                      };
+                    },
+                  ),
+
+                  SizedBox(height: 20) ,
+
+                  FlatButton(
+                    onPressed: () async {
+                      dynamic resp ;
+                      resp = await Future.delayed(
+                          const Duration(milliseconds: 2000), () => resend()) ;
+                      setState(() {
+                        rs = true ;
+                        test = resp['code'] ;
+                      });
+                    },
+                    child: Text(
+                      'Resend SMS',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontFamily: 'NunitoSansLight',
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+
+                ]
             ),
           ),
 
