@@ -390,7 +390,7 @@ class _SignupScreen1State extends State<SignupScreen1> {
                   "MobileNo":number } } ;
 
                 resp = await Future.delayed(
-                    const Duration(milliseconds: 3000), () => register()) ;
+                    const Duration(milliseconds: 5000), () => register()) ;
               }
 
               // After [onPressed], it will trigger animation running backwards, from end to beginning

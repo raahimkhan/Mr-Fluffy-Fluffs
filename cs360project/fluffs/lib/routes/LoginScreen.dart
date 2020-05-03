@@ -298,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment(0.0, 0.65),
                 child: FlatButton(
                   onPressed: () {
-                    //Navigator.of(context).pushReplacementNamed('/forgotpassword_screen1') ;
+                    Navigator.of(context).pushReplacementNamed('/forgotpassword') ;
                   },
                   child: Text(
                     'Forgot Password?',
