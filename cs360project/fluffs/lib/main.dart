@@ -5,6 +5,7 @@ import 'package:fluffs/routes/LoginScreen.dart';
 import 'package:fluffs/routes/SignupScreen1.dart';
 import 'package:fluffs/routes/SignupScreen2.dart';
 import 'package:fluffs/routes/SignupScreen3.dart';
+import 'package:fluffs/routes/ForgotPassword.dart';
 import 'package:fluffs/routes/ForgotPasswordScreen1.dart';
 import 'package:fluffs/routes/ForgotPasswordScreen2.dart';
 import 'package:fluffs/routes/home.dart';
@@ -27,6 +28,7 @@ void main() => runApp(MaterialApp(
     '/signup_screen1': (context) => SignupScreen1(),
     '/signup_screen2': (context) => SignupScreen2(),
     '/signup_screen3': (context) => SignupScreen3(),
+    '/forgotpassword': (context) => ForgotPassword(),
     '/forgotpassword_screen1': (context) => ForgotPasswordScreen1(),
     '/forgotpassword_screen2': (context) => ForgotPasswordScreen2(),
     '/home_screen': (context) => Home(),
