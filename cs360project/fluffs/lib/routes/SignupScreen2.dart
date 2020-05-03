@@ -182,7 +182,7 @@ class _SignupScreen2State extends State<SignupScreen2> {
                         if (pin == twilio_code) {
                           verified = true ;
                           resp = await Future.delayed(
-                              const Duration(milliseconds: 2000), () => verify()) ;
+                              const Duration(milliseconds: 5000), () => verify()) ;
                         }
                       }
 
@@ -190,7 +190,7 @@ class _SignupScreen2State extends State<SignupScreen2> {
                         if (pin == test) {
                           verified = true ;
                           resp = await Future.delayed(
-                              const Duration(milliseconds: 2000), () => verify()) ;
+                              const Duration(milliseconds: 5000), () => verify()) ;
                         }
                       }
 
@@ -224,7 +224,7 @@ class _SignupScreen2State extends State<SignupScreen2> {
                     onPressed: () async {
                       dynamic resp ;
                       resp = await Future.delayed(
-                          const Duration(milliseconds: 2000), () => resend()) ;
+                          const Duration(milliseconds: 5000), () => resend()) ;
                       setState(() {
                         rs = true ;
                         test = resp['code'] ;
