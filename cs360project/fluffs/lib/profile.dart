@@ -51,7 +51,7 @@ class _ProfileState extends State<Profile> {
   var status_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/' ;
 
   // to check whether guest is logged in or a registered user
-  Future <void> check_status() async {
+  Future <dynamic> check_status() async {
     var response = await Requests.get(
       status_url,
     );
@@ -59,14 +59,16 @@ class _ProfileState extends State<Profile> {
 
     dynamic j = response.json() ;
 
-    if (j['msg'].contains('You must be logged in to access this feature')) {
+    if (j['msg'].contains('You must be logged in to access this feature')) {  // guest is logged in
       name = 'Guest' ;
     }
 
-    else {
+    else { // user is logged in
       dynamic data = j['data'] ;
       name = data['FullName'] ;
     }
+
+    return j ;
   }
 
   @override
@@ -82,94 +84,109 @@ class _ProfileState extends State<Profile> {
     var hTH = MediaQuery.of(context).size.height;
     var blockWidth = wTH / 100;
     var blockHeight = hTH / 100;
-    name = 'Loading...' ;
+    //name = 'Loading...' ;
 
-    return Material(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: blockHeight * 2.8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return new Material(
+      child: new FutureBuilder <dynamic> (
+          future: check_status(), // this future builder will determine whether guest is logged in or a registered user
+          builder: (BuildContext context, AsyncSnapshot <dynamic> feedState) {
+        if (feedState.hasData) {
+          // This means future has been completed and we can use the data received to build our widgets
+        }
+
+        else {
+          // This will run until future has not been completed
+          return new Center(child: new CircularProgressIndicator()) ;
+        }
+
+        return Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: blockHeight * 2.8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.keyboard_arrow_left),
+                    color: Colors.red[400],
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                        builder: (context) => Cart(),
+                      ),
+                      );
+                    },
+                    icon: Icon(Icons.shopping_cart),
+                    color: Colors.red[200],
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.keyboard_arrow_left),
-                  color: Colors.red[400],
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context, MaterialPageRoute(
-                      builder: (context) => Cart(),
-                    ),
-                    );
-                  },
-                  icon: Icon(Icons.shopping_cart),
-                  color: Colors.red[200],
-                ),
+                profileIcon(blockWidth),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              profileIcon(blockWidth),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(0, blockHeight * 2, 0, blockHeight * 2),
-                child: Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: blockWidth * 7,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.brown[400],
-                  ),
-                  textAlign:TextAlign.center,
-                ),
-              ),
-              lines(blockWidth),
-              tiles("Privacy Settings", Privacy()),
-              lines(blockWidth),
-              tiles("Order History", Cart()),
-              lines(blockWidth),
-              tiles("Review History", Cart()),
-              lines(blockWidth),
-              FlatButton(
-                  onPressed: () async {
-
-                    if (name == 'Guest') {
-                      await Future.delayed(
-                          const Duration(milliseconds: 2000), () => guest_logout()) ;
-                      Navigator.of(context).pushReplacementNamed('/opening_screen') ;
-                    }
-
-                    else {
-                      await Future.delayed(
-                          const Duration(milliseconds: 2000), () => user_logout()) ;
-                      Navigator.of(context).pushReplacementNamed('/opening_screen') ;
-                    }
-                  },
-
-                  textColor: Colors.red[400],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, blockHeight * 2, 0, blockHeight * 2),
                   child: Text(
-                    "Log Out",
+                    name,
                     style: TextStyle(
-                      fontSize: blockWidth * 4,
+                      fontSize: blockWidth * 7,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown[400],
                     ),
-                  )
-              ),
-              lines(wTH),
-            ],
-          ),
-        ],
+                    textAlign:TextAlign.center,
+                  ),
+                ),
+                lines(blockWidth),
+                tiles("Privacy Settings", Privacy()),
+                lines(blockWidth),
+                tiles("Order History", Cart()),
+                lines(blockWidth),
+                tiles("Review History", Cart()),
+                lines(blockWidth),
+                FlatButton(
+                    onPressed: () async {
+
+                      if (name == 'Guest') {
+                        await Future.delayed(
+                            const Duration(milliseconds: 2000), () => guest_logout()) ;
+                        Navigator.of(context).pushReplacementNamed('/opening_screen') ;
+                      }
+
+                      else {
+                        await Future.delayed(
+                            const Duration(milliseconds: 2000), () => user_logout()) ;
+                        Navigator.of(context).pushReplacementNamed('/opening_screen') ;
+                      }
+                    },
+
+                    textColor: Colors.red[400],
+                    child: Text(
+                      "Log Out",
+                      style: TextStyle(
+                        fontSize: blockWidth * 4,
+                      ),
+                    )
+                ),
+                lines(wTH),
+              ],
+            ),
+          ],
+        ) ;
+        }
       ),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
