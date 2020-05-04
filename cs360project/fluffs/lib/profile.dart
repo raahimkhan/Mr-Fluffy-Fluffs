@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluffs/cart_1.dart';
 import 'package:fluffs/privacy.dart';
+import 'package:fluffs/orderhistory.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'package:requests/requests.dart' ;
@@ -151,7 +152,7 @@ class _ProfileState extends State<Profile> {
                 lines(blockWidth),
                 tiles("Privacy Settings", Privacy()),
                 lines(blockWidth),
-                tiles("Order History", Cart()),
+                tiles("Order History", Order()),
                 lines(blockWidth),
                 tiles("Review History", Cart()),
                 lines(blockWidth),
