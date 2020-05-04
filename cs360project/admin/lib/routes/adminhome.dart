@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:admin/servicemanage.dart';
+import 'package:admin/menumanage.dart';
+import 'package:admin/ordermanage.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'package:requests/requests.dart' ;
@@ -94,9 +96,9 @@ class _AdminHomeState extends State<AdminHome> {
             ),
 
             lines(blockWidth),
-            tiles("Order Management", Service()),
+            tiles("Order Management", OrderManage()),
             lines(blockWidth),
-            tiles("Menu Management", Service()),
+            tiles("Menu Management", MenuManage()),
             lines(blockWidth),
             tiles("Service Management", Service()),
             lines(blockWidth),
