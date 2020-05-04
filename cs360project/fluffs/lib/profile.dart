@@ -6,6 +6,8 @@ import 'dart:collection';
 import 'package:requests/requests.dart' ;
 import 'package:shared_preferences/shared_preferences.dart' ;
 
+String type ; // Guest or a registered user
+
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -26,7 +28,6 @@ class _ProfileState extends State<Profile> {
 
   var guest_logout_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/guest/logout' ;
   var user_logout_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/logout' ;
-  String name ;
 
   Future <void> guest_logout() async {
     var response = await Requests.post(
@@ -60,12 +61,12 @@ class _ProfileState extends State<Profile> {
     dynamic j = response.json() ;
 
     if (j['msg'].contains('You must be logged in to access this feature')) {  // guest is logged in
-      name = 'Guest' ;
+      type = 'Guest' ;
     }
 
     else { // user is logged in
       dynamic data = j['data'] ;
-      name = data['FullName'] ;
+      type = data['FullName'] ;
     }
 
     return j ;
@@ -84,7 +85,6 @@ class _ProfileState extends State<Profile> {
     var hTH = MediaQuery.of(context).size.height;
     var blockWidth = wTH / 100;
     var blockHeight = hTH / 100;
-    //name = 'Loading...' ;
 
     return new Material(
       child: new FutureBuilder <dynamic> (
@@ -139,7 +139,7 @@ class _ProfileState extends State<Profile> {
                 Container(
                   padding: EdgeInsets.fromLTRB(0, blockHeight * 2, 0, blockHeight * 2),
                   child: Text(
-                    name,
+                    type,
                     style: TextStyle(
                       fontSize: blockWidth * 7,
                       fontWeight: FontWeight.bold,
@@ -158,7 +158,7 @@ class _ProfileState extends State<Profile> {
                 FlatButton(
                     onPressed: () async {
 
-                      if (name == 'Guest') {
+                      if (type == 'Guest') {
                         await Future.delayed(
                             const Duration(milliseconds: 2000), () => guest_logout()) ;
                         Navigator.of(context).pushReplacementNamed('/opening_screen') ;
@@ -209,6 +209,10 @@ Widget profileIcon(wTH) {
 
 // This is a manually constructed widget that is used for creating same type of buttons
 
+//tiles("Privacy Settings", Privacy()),
+//tiles("Order History", Cart()),
+//tiles("Review History", Cart()),
+
 Widget tiles(String name, Widget wid) {
   return Builder(
       builder: (BuildContext context) {
@@ -216,11 +220,27 @@ Widget tiles(String name, Widget wid) {
         var blockWidth = wTH / 100;
         return FlatButton(
             onPressed: () {
-              Navigator.push(
-                context,MaterialPageRoute(
-                builder: (context) => wid,
-              ),
-              );
+              // Now if Guest is logged in they cannot access privacy screen, order history screen, and review history screen
+
+              if ((name == "Privacy Settings" || name == "Order History" || name == "Review History") && type == "Guest") {
+                AlertDialog msg = display_result('Please signup to access this features') ;
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return msg ;
+                  },
+                ) ;
+              }
+
+              // If user is logged in they can access the screens
+              else {
+                Navigator.push(
+                  context,MaterialPageRoute(
+                  builder: (context) => wid,
+                ),
+                );
+              }
+
             },
             textColor: Colors.brown[400],
             child: Text(
