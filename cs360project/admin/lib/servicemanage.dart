@@ -1,4 +1,21 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
+
+var services_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/services' ;
+
+//Future <void> get_services() async {
+//  var response = await Requests.get(
+//    services_url,
+//  );
+//  response.raiseForStatus();
+//
+//  dynamic resp = response.json() ;
+//
+//  print(resp) ;
+//}
 
 class Service extends StatelessWidget {
 
@@ -8,6 +25,8 @@ class Service extends StatelessWidget {
   Widget build(BuildContext context) {
 
     // Variables for adjusting Screen width and Height according to different sizes
+
+    //get_services() ;
 
     var wTH = MediaQuery.of(context).size.width;
     var hTH = MediaQuery.of(context).size.height;
@@ -94,7 +113,8 @@ class ServiceMenu extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: blockWidth * 2),
-                  child: SwitchWidget(),
+
+                  child: SwitchWidget('Menu'),
                 ),
               ],
             ),
@@ -110,13 +130,13 @@ class ServiceMenu extends StatelessWidget {
                 Text(
                   "Custom Pancakes",
                   style: TextStyle(
-                    fontSize: blockWidth * 5,
+                    fontSize: blockWidth * 6,
                     color: Color(0xffbb5e1e),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: blockWidth * 2),
-                  child: SwitchWidget(),
+                  child: SwitchWidget('Custom Pancakes'),
                 ),
               ],
             ),
@@ -132,13 +152,13 @@ class ServiceMenu extends StatelessWidget {
                 Text(
                   "Community Pancakes",
                   style: TextStyle(
-                    fontSize: blockWidth * 5,
+                    fontSize: blockWidth * 6,
                     color: Color(0xffbb5e1e),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: blockWidth * 2),
-                  child: SwitchWidget(),
+                  child: SwitchWidget('Community Pancakes'),
                 ),
               ],
             ),
@@ -160,7 +180,7 @@ class ServiceMenu extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: blockWidth * 2),
-                  child: SwitchWidget(),
+                  child: SwitchWidget('Leaderboard'),
                 ),
               ],
             ),
@@ -174,23 +194,84 @@ class ServiceMenu extends StatelessWidget {
 }
 
  class SwitchWidget extends StatefulWidget {
+
+   String serviceType ;
+
+   SwitchWidget(String serviceType) {
+     this.serviceType = serviceType ;
+   }
+
     @override
-    SwitchWidgetClass createState() => new SwitchWidgetClass();
+    SwitchWidgetClass createState() => new SwitchWidgetClass(serviceType);
   }
+
+  // This function toggles the selected service on or off
+var patch_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/services/' ;
+Future <void> toggleService(name, body) async {
+  var response = await Requests.patch(
+      patch_url + name,
+      body: body,
+      bodyEncoding: RequestBodyEncoding.JSON
+  ) ;
+
+  dynamic j = response.json() ;
+}
   
 class SwitchWidgetClass extends State {
+
+  String serviceType ;  // Menu, Custom Pancakes, Community Pancakes, Leaderboard
+
+  SwitchWidgetClass(String serviceType) {
+    this.serviceType = serviceType ;
+  }
+
+  AlertDialog display_result(String message) {
+    AlertDialog alert = AlertDialog (
+      content: Text(message),
+    ) ;
+
+    return alert ;
+  }
  
   bool switchControl = true;
  
   void toggleSwitch(bool value) {
- 
+
       if(switchControl == false)
       {
         setState(() {
           switchControl = true;
         });
-        print('Switch is ON');
+
         // Put your code here which you want to execute on Switch ON event.
+
+        if (this.serviceType == 'Menu') {
+          var body = { 'service': {'Status': true} };
+          toggleService('5eb068da9a36954d94fdfb02', body) ;
+        }
+
+        else if (this.serviceType == 'Custom Pancakes') {
+          var body = { 'service': {'Status': true} };
+          toggleService('5e9efed8eb2b5c27128eeeb4', body) ;
+        }
+
+        else if (this.serviceType == 'Community Pancakes') {
+          var body = { 'service': {'Status': true} };
+          toggleService('5eb159176bad5000047a291d', body) ;
+        }
+
+        else if (this.serviceType == 'Leaderboard') {
+          var body = { 'service': {'Status': true} };
+          toggleService('5eb159056bad5000047a291c', body) ;
+        }
+
+        AlertDialog msg = display_result('Service enabled.') ;
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return msg ;
+          },
+        ) ;
  
       }
       else
@@ -198,8 +279,35 @@ class SwitchWidgetClass extends State {
         setState(() {
           switchControl = false;
         });
-        print('Switch is OFF');
         // Put your code here which you want to execute on Switch OFF event.
+
+        if (this.serviceType == 'Menu') {
+          var body = { 'service': {'Status': false} };
+          toggleService('5eb068da9a36954d94fdfb02', body) ;
+        }
+
+        else if (this.serviceType == 'Custom Pancakes') {
+          var body = { 'service': {'Status': false} };
+          toggleService('5e9efed8eb2b5c27128eeeb4', body) ;
+        }
+
+        else if (this.serviceType == 'Community Pancakes') {
+          var body = { 'service': {'Status': false} };
+          toggleService('5eb159176bad5000047a291d', body) ;
+        }
+
+        else if (this.serviceType == 'Leaderboard') {
+          var body = { 'service': {'Status': false} };
+          toggleService('5eb159056bad5000047a291c', body) ;
+        }
+
+        AlertDialog msg = display_result('Service disabled.') ;
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return msg ;
+          },
+        ) ;
       }
   }
   

@@ -4,13 +4,70 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fluffs/menu_1.dart';
 import 'package:fluffs/profile.dart';
 import 'package:fluffs/extra.dart';
+import 'dart:async';
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
+bool customStatus ; // true or false depending on custom pancakes services are available or not
+bool menuStatus ; // true or false depending on menu services are available or not
+bool communityStatus ; // true or false depending on community pancakes services are available or not
+bool leaderStatus ; // true or false depending on leader board services are available or not
+
 class _HomeState extends State<Home> {
+
+  var services_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/services' ;
+
+  Future <void> get_services() async {
+    var response = await Requests.get(
+      services_url,
+    );
+    response.raiseForStatus();
+
+    dynamic resp = response.json() ;
+
+    List data =  resp as List ;
+
+    customStatus = data[0]['Status'] ;
+    menuStatus = data[1]['Status'] ;
+    leaderStatus = data[2]['Status'] ;
+    communityStatus = data[3]['Status'] ;
+  }
+
+  AlertDialog display_result(String message) {
+    AlertDialog alert = AlertDialog (
+      content: Text(message),
+    ) ;
+
+    return alert ;
+  }
+
+  var status_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/' ;
+  String type ; // Can be either 'Guest' or a registered user
+
+  // to check whether guest is logged in or a registered user
+  Future <void> check_status() async {
+    var response = await Requests.get(
+      status_url,
+    );
+    response.raiseForStatus();
+
+    dynamic j = response.json() ;
+
+    if (j['msg'].contains('You must be logged in to access this feature')) {  // guest is logged in
+      type = 'Guest' ;
+    }
+
+    else { // user is logged in
+      dynamic data = j['data'] ;
+      type = data['FullName'] ;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +78,9 @@ class _HomeState extends State<Home> {
     var hTH = MediaQuery.of(context).size.height;
     var blockWidth = wTH / 100;
     var blockHeight = hTH / 100;
+
+    get_services() ;
+    check_status() ;
 
     return Material(
 
@@ -56,7 +116,41 @@ class _HomeState extends State<Home> {
                       alignment: Alignment.center,
                       child: IconButton(
                         onPressed: () {
-                          print("Leaderboard");
+                          // Guest cannot use 'Create your onw pancake' or 'Custom pancake' feature
+                          if (type == 'Guest') {
+                            AlertDialog msg = display_result('Please register to use this feature.') ;
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return msg ;
+                              },
+                            ) ;
+                          }
+
+                          // If user logged in then it depends whether service is available or unavailable
+
+                          else {
+                            if (leaderStatus == true) {
+                              AlertDialog msg = display_result('Coming soon.') ;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return msg ;
+                                },
+                              ) ;
+                            }
+
+                            else {
+                              AlertDialog msg = display_result('This service is currently unavailable.') ;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return msg ;
+                                },
+                              ) ;
+                            }
+                          }
+
                         },
                         icon: Icon(
                           FontAwesomeIcons.crown,),
@@ -137,11 +231,26 @@ class _HomeState extends State<Home> {
                         height: blockHeight * 7, 
                         child: RaisedButton.icon(
                         onPressed: (){
-                          Navigator.push(
-                            context,MaterialPageRoute(
+
+                          // If menu service is available user / guest would be routed to menu screen
+                          if (menuStatus == true) {
+                            Navigator.push(
+                              context,MaterialPageRoute(
                               builder: (context) => Menu(),
                             ),
-                          );
+                            );
+                          }
+
+                          // If not available (e.g under maintenance) then a prompt will be displayed
+                          else {
+                            AlertDialog msg = display_result('This service is currently unavailable.') ;
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return msg ;
+                              },
+                            ) ;
+                          }
                         }, 
                         icon: Icon(Icons.fastfood), 
                         color: Color(0xffbb5e1e),
@@ -164,7 +273,41 @@ class _HomeState extends State<Home> {
                         height: blockHeight * 7, 
                         child: RaisedButton.icon(
                         onPressed: (){
-                          print("Customizer Lad");
+
+                          // Guest cannot use 'Create your onw pancake' or 'Custom pancake' feature
+                          if (type == 'Guest') {
+                            AlertDialog msg = display_result('Please register to use this feature.') ;
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return msg ;
+                              },
+                            ) ;
+                          }
+
+                          // If user logged in they will be delivered message according to whether service is available or not
+                          else {
+                            if (customStatus == true) {
+                              AlertDialog msg = display_result('Coming soon!') ;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return msg ;
+                                },
+                              ) ;
+                            }
+
+                            else {
+                              AlertDialog msg = display_result('This service is currently unavailable.') ;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return msg ;
+                                },
+                              ) ;
+                            }
+                          }
+
                         },
                         icon: Icon(Icons.receipt), 
                         color: Color(0xffbb5e1e),
@@ -187,7 +330,44 @@ class _HomeState extends State<Home> {
                         height: blockWidth * 12,
                         child: RaisedButton.icon(
                         onPressed: (){
-                          print("Community Pancake");
+
+                          // Guest cannot use community made pancakes feature
+
+                          if (type == 'Guest') {
+                            AlertDialog msg = display_result('Please register to use this feature.') ;
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return msg ;
+                              },
+                            ) ;
+                          }
+
+                          // If user logged in then it depends whether service is available or unavailable
+
+                          else {
+                            if (communityStatus == true) {
+                              AlertDialog msg = display_result('Coming soon.') ;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return msg ;
+                                },
+                              ) ;
+                            }
+
+
+                            else {
+                              AlertDialog msg = display_result('This service is currently unavailable.') ;
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return msg ;
+                                },
+                              ) ;
+                            }
+                          }
+
                         }, 
                         icon: Icon(Icons.star), 
                         color: Color(0xffbb5e1e),
