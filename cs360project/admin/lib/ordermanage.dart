@@ -1,25 +1,82 @@
 import 'package:flutter/material.dart';
+import 'package:admin/receipt.dart';
 
-List orderList = [
+List data = [
   {
-    "id" : "ABCXYZ",
-    "date" : "Sep 24",
-    "price": "RS 240",
+    "Tracking_ID" : "ABCXYZ",
+    "Total": 830,
+    "Subtotal": 790,
+    "DeliveryFee": 40,
+    "Status": "Pending",
+    "Date": "2020/05/05",
+    "Pancakes": [{
+      'Name': 'White Chocolate Chip Pancake',
+      'Quantity': 3,
+      'Price': 360, 
+    },
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 1,
+      'Price': 100, 
+    },
+    {
+      'Name': 'Nutela Pancake',
+      'Quantity': 3,
+      'Price': 340, 
+    },],
   },
   {
-    "id" : "RXDZIU",
-    "date" : "Sep 18",
-    "price": "RS 100",
+    "Tracking_ID" : "RSTXYZ",
+    "Total": 380,
+    "Subtotal": 340,
+    "DeliveryFee": 40,
+    "Status": "Completed",
+    "Date": "2020/05/05",
+    "Pancakes": [{
+      'Name': 'White Chocolate Chip Pancake',
+      'Quantity': 2,
+      'Price': 170, 
+    },
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 1,
+      'Price': 100, 
+    },
+    ],
   },
   {
-    "id" : "CDXALT",
-    "date" : "Aug 18",
-    "price": "RS 120",
+    "Tracking_ID" : "12345",
+    "Total": 140,
+    "Subtotal": 100,
+    "DeliveryFee": 40,
+    "Status": "Completed",
+    "Date": "2020/05/05",
+    "Pancakes": [
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 1,
+      'Price': 100, 
+    },
+    ],
   },
   {
-    "id" : "ARQSFG",
-    "date" : "Jul 9",
-    "price": "RS 340",
+    "Tracking_ID" : "ABCXYZ",
+    "Total": 360,
+    "Subtotal": 320,
+    "DeliveryFee": 40,
+    "Status": "Completed",
+    "Date": "2020/05/05",
+    "Pancakes": [{
+      'Name': 'Chocolate Chip Pancake',
+      'Quantity': 1,
+      'Price': 120, 
+    },
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 2,
+      'Price': 200, 
+    },
+    ],
   },
 ];
 
@@ -181,13 +238,16 @@ class _OrderManageMenuState extends State<OrderManageMenu> {
           ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: orderList == null ? 0 :orderList.length,
+              itemCount: data == null ? 0 :data.length,
               itemBuilder: (BuildContext context, int index) {
-                Map elem = orderList[index];
+                Map elem = data[index];
                 return OrderManageMenuSetup(
-                  id: elem['id'],
-                  date: elem['date'],
-                  price: elem['price'],
+                  id: elem['Tracking_ID'],
+                  date: elem['Date'],
+                  price: elem['Total'],
+                  pancakes: elem['Pancakes'],
+                  subtotal: elem['Subtotal'],
+                  delfee: elem['DeliveryFee'],
                 );
               },
           ),
@@ -212,13 +272,16 @@ class _OrderManageMenuTwoState extends State<OrderManageMenuTwo> {
           ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: orderList == null ? 0 :orderList.length,
+              itemCount: data == null ? 0 :data.length,
               itemBuilder: (BuildContext context, int index) {
-                Map elem = orderList[index];
+                Map elem = data[index];
                 return OrderManageMenuTwoSetup(
-                  id: elem['id'],
-                  date: elem['date'],
-                  price: elem['price'],
+                  id: elem['Tracking_ID'],
+                  date: elem['Date'],
+                  price: elem['Total'],
+                  pancakes: elem['Pancakes'],
+                  subtotal: elem['Subtotal'],
+                  delfee: elem['DeliveryFee'],
                 );
               },
           ),
@@ -230,9 +293,10 @@ class _OrderManageMenuTwoState extends State<OrderManageMenuTwo> {
 
 class OrderManageMenuSetup extends StatelessWidget {
 
-  final id, date, price;
+  final id, price, state, pancakes, subtotal, delfee;
+  final String date; 
 
-  OrderManageMenuSetup({Key key, this.id, this.date, this.price}) : super(key: key);
+  OrderManageMenuSetup({Key key, this.id, this.date, this.price, this.state, this.pancakes, this.subtotal, this.delfee}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -258,14 +322,14 @@ class OrderManageMenuSetup extends StatelessWidget {
           Column(
             children: <Widget>[
               Text(
-                date,
+                displayDate(date),
                 style: TextStyle(
                   fontSize: blockWidth * 5,
                   color: Color(0xffbb5e1e),
                 ),
               ),
               Text(
-                price,
+                "RS $price",
                 style: TextStyle(
                   fontSize: blockWidth * 5,
                   color: Color(0xffbb5e1e),
@@ -277,7 +341,11 @@ class OrderManageMenuSetup extends StatelessWidget {
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
-                  print("Details");
+                  Navigator.push(
+                    context, MaterialPageRoute(
+                      builder: (context) => Receipt(date:date, pancakes:pancakes, subtotal:subtotal, delfee:delfee, total:price),
+                    ),
+                  );
                 },
                 child: Text(
                   "Details",
@@ -315,9 +383,10 @@ class OrderManageMenuSetup extends StatelessWidget {
 
 class OrderManageMenuTwoSetup extends StatelessWidget {
 
-  final id, date, price;
+  final id, price, state, pancakes, subtotal, delfee;
+  final String date; 
 
-  OrderManageMenuTwoSetup({Key key, this.id, this.date, this.price}) : super(key: key);
+  OrderManageMenuTwoSetup({Key key, this.id, this.date, this.price, this.state, this.pancakes, this.subtotal, this.delfee}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -343,14 +412,14 @@ class OrderManageMenuTwoSetup extends StatelessWidget {
           Column(
             children: <Widget>[
               Text(
-                date,
+                displayDate(date),
                 style: TextStyle(
                   fontSize: blockWidth * 4,
                   color: Color(0xffbb5e1e),
                 ),
               ),
               Text(
-                price,
+                "RS $price",
                 style: TextStyle(
                   fontSize: blockWidth * 4,
                   color: Color(0xffbb5e1e),
@@ -361,7 +430,11 @@ class OrderManageMenuTwoSetup extends StatelessWidget {
           Center(
             child: RaisedButton(
               onPressed: () {
-                print("Details");
+                Navigator.push(
+                  context, MaterialPageRoute(
+                    builder: (context) => Receipt(date:date, pancakes:pancakes, subtotal:subtotal, delfee:delfee, total:price),
+                  ),
+                );
               },
               child: Text(
                 "Details",
@@ -379,4 +452,19 @@ class OrderManageMenuTwoSetup extends StatelessWidget {
       ),
     );
   }
+}
+
+String displayDate(date) {
+  var month = date.substring(5,7);
+  var day = date.substring(8,10);
+  var myInt = int.parse(month);
+  String mon =  getMonth(myInt);
+  String check = mon + " " + day;
+  return check;
+}
+
+String getMonth(number) {
+  List monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  return monthNames[number - 1]; 
 }
