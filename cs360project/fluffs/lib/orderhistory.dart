@@ -4,7 +4,7 @@ import 'package:fluffs/extra.dart';
 
 List orderList = [
   {
-    "id" : "ABCXYZ",
+    "id" : "Raahim",
     "date" : "Sep 24",
     "price": "RS 240",
     "state": "Pending",
