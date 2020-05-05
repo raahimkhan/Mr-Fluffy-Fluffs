@@ -1,31 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:fluffs/cart_1.dart';
 import 'package:fluffs/extra.dart';
+import 'package:fluffs/receipt.dart';
 
-List orderList = [
+List data = [
   {
-    "id" : "ABCXYZ",
-    "date" : "Sep 24",
-    "price": "RS 240",
-    "state": "Pending",
+    "Tracking_ID" : "ABCXYZ",
+    "Total": 830,
+    "Subtotal": 790,
+    "DeliveryFee": 40,
+    "Status": "Pending",
+    "Date": "2020/05/05",
+    "Pancakes": [{
+      'Name': 'White Chocolate Chip Pancake',
+      'Quantity': 3,
+      'Price': 360, 
+    },
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 1,
+      'Price': 100, 
+    },
+    {
+      'Name': 'Nutela Pancake',
+      'Quantity': 3,
+      'Price': 340, 
+    },],
   },
   {
-    "id" : "RXDZIU",
-    "date" : "Sep 18",
-    "price": "RS 100",
-    "state": "Completed",
+    "Tracking_ID" : "RSTXYZ",
+    "Total": 380,
+    "Subtotal": 340,
+    "DeliveryFee": 40,
+    "Status": "Completed",
+    "Date": "2020/05/05",
+    "Pancakes": [{
+      'Name': 'White Chocolate Chip Pancake',
+      'Quantity': 2,
+      'Price': 170, 
+    },
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 1,
+      'Price': 100, 
+    },
+    ],
   },
   {
-    "id" : "CDXALT",
-    "date" : "Aug 18",
-    "price": "RS 120",
-    "state": "Completed",
+    "Tracking_ID" : "12345",
+    "Total": 140,
+    "Subtotal": 100,
+    "DeliveryFee": 40,
+    "Status": "Completed",
+    "Date": "2020/05/05",
+    "Pancakes": [
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 1,
+      'Price': 100, 
+    },
+    ],
   },
   {
-    "id" : "ARQSFG",
-    "date" : "Jul 9",
-    "price": "RS 340",
-    "state": "Completed",
+    "Tracking_ID" : "ABCXYZ",
+    "Total": 360,
+    "Subtotal": 320,
+    "DeliveryFee": 40,
+    "Status": "Completed",
+    "Date": "2020/05/05",
+    "Pancakes": [{
+      'Name': 'Chocolate Chip Pancake',
+      'Quantity': 1,
+      'Price': 120, 
+    },
+    {
+      'Name': 'Fluffy Pancake',
+      'Quantity': 2,
+      'Price': 200, 
+    },
+    ],
   },
 ];
 
@@ -51,7 +104,8 @@ class _OrderState extends State<Order> {
       backgroundColor: Colors.white,
 
       body: Container(
-        child: Column(
+        child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
 
             // Rows were used here to correctly position the icons and the search bars
@@ -105,23 +159,27 @@ class _OrderState extends State<Order> {
             ),
             SizedBox(height: blockHeight * 2),
             Container(
-              width: blockWidth * 80,
-              child: TextField(
-                controller: emailController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                   borderSide: BorderSide(
-                     color: Colors.brown[200], 
-                     width: blockWidth * 0.3,
-                   ),
-                   borderRadius: BorderRadius.circular(blockWidth),
-                  ),
-                  hintText: "Search Purchases",
-                  suffixIcon: IconButton(
-                    onPressed: (){
-                    },
-                    icon: Icon(Icons.search),
+              child: Align(
+                child: SizedBox(
+                  width: blockWidth * 80,
+                  child: TextField(
+                    controller: emailController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                       borderSide: BorderSide(
+                         color: Colors.brown[200], 
+                         width: blockWidth * 0.3,
+                       ),
+                       borderRadius: BorderRadius.circular(blockWidth),
+                      ),
+                      hintText: "Search Purchases",
+                      suffixIcon: IconButton(
+                        onPressed: (){
+                        },
+                        icon: Icon(Icons.search),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -152,14 +210,17 @@ class _OrderMenuState extends State<OrderMenu> {
           ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: orderList == null ? 0 :orderList.length,
+              itemCount: data == null ? 0 :data.length,
               itemBuilder: (BuildContext context, int index) {
-                Map elem = orderList[index];
+                Map elem = data[index];
                 return OrderMenuSetup(
-                  id: elem['id'],
-                  date: elem['date'],
-                  price: elem['price'],
-                  state: elem['state'],
+                  id: elem['Tracking_ID'],
+                  date: elem['Date'],
+                  price: elem['Total'],
+                  state: elem['Status'],
+                  pancakes: elem['Pancakes'],
+                  subtotal: elem['Subtotal'],
+                  delfee: elem['DeliveryFee'],
                 );
               },
           ),
@@ -171,9 +232,10 @@ class _OrderMenuState extends State<OrderMenu> {
 
 class OrderMenuSetup extends StatelessWidget {
 
-  final id, date, price, state;
+  final id, price, state, pancakes, subtotal, delfee;
+  final String date; 
 
-  OrderMenuSetup({Key key, this.id, this.date, this.price, this.state}) : super(key: key);
+  OrderMenuSetup({Key key, this.id, this.date, this.price, this.state, this.pancakes, this.subtotal, this.delfee}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -199,14 +261,14 @@ class OrderMenuSetup extends StatelessWidget {
           Column(
             children: <Widget>[
               Text(
-                date,
+                displayDate(date),
                 style: TextStyle(
                   fontSize: blockWidth * 3.5,
                   color: Color(0xffbb5e1e),
                 ),
               ),
               Text(
-                price,
+                "RS $price",
                 style: TextStyle(
                   fontSize: blockWidth * 3.5,
                   color: Color(0xffbb5e1e),
@@ -223,7 +285,11 @@ class OrderMenuSetup extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: () {
-              print("Details");
+              Navigator.push(
+                context, MaterialPageRoute(
+                  builder: (context) => Receipt(date:date, pancakes:pancakes, subtotal:subtotal, delfee:delfee, total:price),
+                ),
+              );
             },
             child: Text(
               "Details",
@@ -240,4 +306,19 @@ class OrderMenuSetup extends StatelessWidget {
       ),
     );
   }
+}
+
+String displayDate(date) {
+  var month = date.substring(5,7);
+  var day = date.substring(8,10);
+  var myInt = int.parse(month);
+  String mon =  getMonth(myInt);
+  String check = mon + " " + day;
+  return check;
+}
+
+String getMonth(number) {
+  List monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  return monthNames[number - 1]; 
 }
