@@ -19,6 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
   // Screen details
   double height ;
   double width ;
+  double blockWidth;
+  double blockHeight;
 
   String username = "" ;
   String password = "" ;
@@ -28,12 +30,15 @@ class _LoginScreenState extends State<LoginScreen> {
     // This will give the true available height
     height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - kToolbarHeight - kBottomNavigationBarHeight ;
     width = MediaQuery.of(context).size.width ;
+    blockWidth = width / 100;
+    blockHeight = height / 100;
   }
 
   // Widget that displays lock icon inside a circle
-  Widget padlock = Container(
-    height: 65.0,
-    width: 60.0,
+  Widget padlock(blockWidth) {
+    return Container(
+    height: blockWidth * 20,
+    width: blockWidth * 20,
     decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.white,
@@ -42,11 +47,13 @@ class _LoginScreenState extends State<LoginScreen> {
         )
     ),
   ) ;
+}
 
   // Widget that displays profile icon inside a circle
-  Widget profile = Container(
-    height: 65.0,
-    width: 60.0,
+  Widget profile (blockWidth) {
+    return Container(
+    height: blockWidth * 20,
+    width: blockWidth * 20,
     decoration: BoxDecoration (
         shape: BoxShape.circle,
         color: Colors.white,
@@ -54,8 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
           fit: BoxFit.fitHeight,
           image: AssetImage('assets/loginprofile.jfif'),
         )
-    ),
-  ) ;
+      ),
+    );
+  }
 
   // this is to store the form state globally so form data could be uniquely recognized
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>() ;
@@ -99,198 +107,223 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Form(
         key: _formKey,
         child: Container(
-          height: height,
-          width: width,
           color: Colors.white,
 
-          child: Stack(
+          child: Column(
             children: <Widget>[
 
-              Align(
-                alignment: Alignment(0, -1.0),
-                child: Text(
-                    "Admin",
-                    style: TextStyle(
-                        fontSize: 47.0, color: Color(0xffbb5e1e),fontFamily: 'NunitoSansSemiBold')
-                ),
-              ),
-
-//              Align(
-//                alignment: Alignment(0.0, -0.79),
-//                child: Image.asset('assets/admin.png', scale: 2.8),
-//              ),
-
-              SizedBox(height: 30),
-
-              Align(
-                alignment: Alignment(0.0, -0.20),
-
-                child: SizedBox(
-                  width: 340,
-                  height: 66,
-
-                  child: TextFormField(
-                    autofocus: true,
-                    onChanged: (String user){
-                      setState(() {
-                        username = user ;
-                      });
-                    },
-                    textAlign: TextAlign.left,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Username can't be empty" ;
-                      }
-                      return null ;
-                    },
-
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(1000.0),
-                        ),
-                        borderSide: BorderSide(color: Colors.white, width: 0.0),
-                      ),
-                      filled: true,
-                      hintStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: 'NunitoSansLight',
-                      ),
-                      hintText: "Username",
-                      contentPadding: EdgeInsets.fromLTRB(80.0, 40.0, 0.0, 0.0),
-                      fillColor: Color(0x73ff8000),
-                    ),
+              Container(
+                child: Align(
+                  child: Text(
+                      "Admin",
+                      style: TextStyle(
+                          fontSize: blockWidth * 15, color: Color(0xffbb5e1e),fontFamily: 'NunitoSansSemiBold')
                   ),
                 ),
               ),
 
-              Align(
-                  alignment: Alignment(-0.757, -0.200), // -0.150
-                  child: profile
-              ),
+            // SizedBox(height: blockWidth * 3),
 
-              SizedBox(height: 40),
-
-              Align(
-                alignment: Alignment(0.0, 0.16),
-                child: SizedBox(
-                  width: 340,
-                  height: 63,
-                  child: TextFormField(
-                    obscureText: true,
-                    autofocus: true,
-                    onChanged: (String pass){
-                      setState(() {
-                        password = pass ;
-                      });
-                    },
-                    textAlign: TextAlign.left,
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return "Password can't be empty" ;
-                      }
-                      return null ;
-                    },
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(45.0),
-                        ),
-                        borderSide: BorderSide(color: Colors.white, width: 0.0),
-                      ),
-                      filled: true,
-                      hintStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: 'NunitoSansLight',
-                      ),
-                      hintText: "Password",
-                      contentPadding: EdgeInsets.fromLTRB(80.0, 36, 0.0, 0.0),
-                      fillColor: Color(0x73ff8000),
-                    ),
+             Container(
+                // width: blockWidth * 100,
+                height: blockWidth * 35,
+                child: Stack(
+                  children: <Widget>[
+                  // alignment: Alignment.topCenter,
+                  Icon(
+                    Icons.person_outline,
+                    size: blockWidth * 42,
+                    color: Color(0xffbb5e1e),
                   ),
+                  Icon(
+                    Icons.settings,
+                    size: blockWidth * 19,
+                    color: Colors.black54,
+                  ),
+                  ],
                 ),
               ),
 
-              Align(
-                alignment: Alignment(-0.757, 0.16),
-                child: padlock,
-              ),
+              SizedBox(height: blockWidth * 10),
 
-              SizedBox(height: 40),
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: blockWidth * 100,
+                    child: Align(
+                      child: SizedBox(
+                        width: blockWidth * 86,
+                        height: blockWidth * 20,
 
-              Align(
-                alignment: Alignment(0.0, 0.47),
-                child: ProgressButton(
-                  animate: true,
-                  color: Color(0xffbb5e1e),
-                  defaultWidget: const Text(
-                    'Log in',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 23.0,
-                      fontFamily: 'NunitoSansSemiBold',
-                    ),
-                  ),
-                  progressWidget: const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                  width: 250,
-                  height: 53,
-                  borderRadius: 30.0,
-                  onPressed: () async {
-                    dynamic resp ;
-                    AlertDialog msg ;
-                    if (_formKey.currentState.validate()) {
-
-                      // json object will be sent according to whether user entered email or username
-
-                      if (username.contains('@')) {
-                        body = { "admin":{"Email":username, "PassHash":password} } ;
-                      }
-
-                      else {
-                        body = { "admin":{"Username":username, "PassHash":password} } ;
-                      }
-
-                      resp = await Future.delayed(
-                          const Duration(milliseconds: 3000), () => admin_login()) ;
-                    }
-
-                    // After [onPressed], it will trigger animation running backwards, from end to beginning
-                    return () {
-                      // Following are just the conditions (responses) from api according which user would either log in
-                      // or displayed with some alert prompt message
-
-                      if (resp['status'] == 'True') {
-                        Navigator.of(context).pushReplacementNamed('/home_screen') ;
-                      }
-
-                      else if (resp['status'] == 'False') {
-                        msg = display_result(resp['msg']) ;
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return msg ;
+                        child: TextFormField(
+                          autofocus: true,
+                          onChanged: (String user){
+                            setState(() {
+                              username = user ;
+                            });
                           },
-                        ) ;
+                          textAlign: TextAlign.left,
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return "Username can't be empty" ;
+                            }
+                            return null ;
+                          },
+
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(blockWidth * 10),
+                              ),
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                            filled: true,
+                            hintStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: blockWidth * 6.5,
+                              fontFamily: 'NunitoSansLight',
+                            ),
+                            hintText: "Username",
+                            contentPadding: EdgeInsets.fromLTRB(blockWidth * 28, blockWidth * 10, 0.0, 0.0),
+                            fillColor: Color(0x73ff8000),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment(-blockWidth * 0.26, 0), // -0.150
+                    child: profile(blockWidth)
+                  ),
+                ],
+              ),
+
+              SizedBox(height: blockWidth * 4),
+
+              Stack(
+                children: <Widget>[
+                  Container(
+                    width: blockWidth * 100,
+                    child: Align(
+                      child: SizedBox(
+                        width: blockWidth * 86,
+                        height: blockWidth * 20,
+                        child: TextFormField(
+                          obscureText: true,
+                          autofocus: true,
+                          onChanged: (String pass){
+                            setState(() {
+                              password = pass ;
+                            });
+                          },
+                          textAlign: TextAlign.left,
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return "Password can't be empty" ;
+                            }
+                            return null ;
+                          },
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(blockWidth * 10),
+                              ),
+                              borderSide: BorderSide(color: Colors.white, width: 0.0),
+                            ),
+                            filled: true,
+                            hintStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: blockWidth * 6.5,
+                              fontFamily: 'NunitoSansLight',
+                            ),
+                            hintText: "Password",
+                            contentPadding: EdgeInsets.fromLTRB(blockWidth * 28, blockWidth * 10, 0.0, 0.0),
+                            fillColor: Color(0x73ff8000),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment(-blockWidth * 0.26, 0),
+                    child: padlock(blockWidth),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: blockWidth * 4),
+
+              Container(
+                width: blockWidth * 80,
+                child: Align(
+                  child: ProgressButton(
+                    animate: true,
+                    color: Color(0xffbb5e1e),
+                    defaultWidget: Text(
+                      'Log in',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: blockWidth * 6.5,
+                        fontFamily: 'NunitoSansSemiBold',
+                      ),
+                    ),
+                    progressWidget: const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                    width: blockWidth * 65,
+                    height: blockWidth * 14,
+                    borderRadius: blockWidth * 10,
+                    onPressed: () async {
+                      dynamic resp ;
+                      AlertDialog msg ;
+                      if (_formKey.currentState.validate()) {
+
+                        // json object will be sent according to whether user entered email or username
+
+                        if (username.contains('@')) {
+                          body = { "admin":{"Email":username, "PassHash":password} } ;
+                        }
+
+                        else {
+                          body = { "admin":{"Username":username, "PassHash":password} } ;
+                        }
+
+                        resp = await Future.delayed(
+                            const Duration(milliseconds: 3000), () => admin_login()) ;
                       }
 
-                      else {
-                        // Do nothing as form data has not been validated
-                      }
+                      // After [onPressed], it will trigger animation running backwards, from end to beginning
+                      return () {
+                        // Following are just the conditions (responses) from api according which user would either log in
+                        // or displayed with some alert prompt message
 
-                    };
-                  },
+                        if (resp['status'] == 'True') {
+                          Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                        }
+
+                        else if (resp['status'] == 'False') {
+                          msg = display_result(resp['msg']) ;
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return msg ;
+                            },
+                          ) ;
+                        }
+
+                        else {
+                          // Do nothing as form data has not been validated
+                        }
+
+                      };
+                    },
+                  ),
                 ),
               ),
 
-              SizedBox(height: 40),
+              SizedBox(height: blockWidth * 0.5),
 
-              // Yet to be implemented
               Align(
-                alignment: Alignment(0.0, 0.65),
                 child: FlatButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacementNamed('/forgotpassword') ;
@@ -298,7 +331,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(
-                      fontSize: 17.0,
+                      fontSize: blockWidth * 4,
                       fontFamily: 'NunitoSansLight',
                       color: Colors.black,
                     ),
@@ -307,7 +340,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              SizedBox(height: 40),
+              SizedBox(height: blockWidth * 0.5),
 
             ],
           ),
