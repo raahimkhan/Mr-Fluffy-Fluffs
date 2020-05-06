@@ -20,6 +20,6 @@ void main() => runApp(MaterialApp(
     '/home_screen': (context) => AdminHome(),
     '/forgotpassword': (context) => ForgotPassword(),
     '/forgotpassword_screen1': (context) => ForgotPasswordScreen1(),
-    '/forgotpassword_screen2': (context) => ForgotPasswordScreen2()
+    '/forgotpassword_screen2': (context) => ForgotPasswordScreen2(),
   },
 )) ;
