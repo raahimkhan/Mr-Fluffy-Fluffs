@@ -92,13 +92,13 @@ class _SignupScreen1State extends State<SignupScreen1> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    height: blockSizeVertical * 15,
+                    height: blockSizeHorizontal * 25,
                     color: Colors.white,
-                    child: Image.asset('assets/signupone.png'),
+                    child: Image.asset('assets/signupone.png',
+                    fit: BoxFit.contain),
                   ),
 
                   Container(
-                    height: blockSizeVertical * 120, // 62
                     width: blockSizeHorizontal * 80,
                     color: Colors.white,
                     child: Column(
@@ -362,24 +362,23 @@ class _SignupScreen1State extends State<SignupScreen1> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: blockSizeVertical * 15,
+        height: blockSizeHorizontal * 15,
         child: Align(
-          alignment: Alignment(0.876, 0.101),
-//                alignment: Alignment(blockSizeHorizontal * 0.28, blockSizeVertical * 0.2),
+          alignment: Alignment(blockSizeHorizontal * 0.2, 0.0),
           child: ProgressButton(
             animate: true,
             color: Color(0xffbb5e1e),
             defaultWidget: Icon(
               Icons.keyboard_arrow_right,
-              size: 67,
+              size: blockSizeHorizontal * 15,
               color: Colors.white,
             ),
             progressWidget: const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
-            width: 60,
-            height: 60,
-            borderRadius: 30,
+            width: blockSizeHorizontal * 20,
+            height: blockSizeHorizontal * 20,
+            borderRadius: blockSizeHorizontal * 10,
             onPressed: () async {
               dynamic resp ;
               AlertDialog msg ;

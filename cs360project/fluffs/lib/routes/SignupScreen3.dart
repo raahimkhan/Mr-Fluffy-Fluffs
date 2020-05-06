@@ -89,21 +89,21 @@ class _SignupScreen3State extends State<SignupScreen3> {
                 Text(
                   'All done',
                   style: TextStyle(
-                    fontSize: 38,
+                    fontSize: blockSizeHorizontal * 6,
                     fontFamily: 'NunitoSansSemiBold',
                     color: Color(0xffbb5e1e),
                   ),
                 ),
 
-                SizedBox(height: 133) ,
+                SizedBox(height: blockSizeHorizontal * 15) ,
 
                 ProgressButton(
                   animate: true,
                   color: Color(0xffbb5e1e),
-                  defaultWidget: const Text(
+                  defaultWidget: Text(
                     'Proceed',
                     style: TextStyle(
-                      fontSize: 23.0,
+                      fontSize: blockSizeHorizontal * 5,
                       fontFamily: 'NunitoSansSemiBold',
                       color: Colors.white,
                     ),
@@ -111,9 +111,9 @@ class _SignupScreen3State extends State<SignupScreen3> {
                   progressWidget: const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
-                  width: 260,
-                  height: 54,
-                  borderRadius: 30.0,
+                  width: blockSizeHorizontal * 40,
+                  height: blockSizeHorizontal * 19,
+                  borderRadius: blockSizeHorizontal * 10,
                   onPressed: () async {
                     dynamic resp ;
                     AlertDialog msg ;

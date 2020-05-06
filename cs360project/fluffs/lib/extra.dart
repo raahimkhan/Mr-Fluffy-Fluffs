@@ -67,7 +67,7 @@ class CartItemsBloc {
     int sum2 = 0;
 
     allItems.forEach((f) => sum1 += f['price']);
-    checkoutItem.forEach((f1) => sum2 += f1['price']);
+
 
     return sum1 + sum2;
 

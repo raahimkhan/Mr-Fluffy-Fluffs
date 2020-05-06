@@ -2,85 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:fluffs/cart_1.dart';
 import 'package:fluffs/extra.dart';
 import 'package:fluffs/receipt.dart';
+import 'dart:async';
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
 
-List data = [
-  {
-    "Tracking_ID" : "ABCXYZ",
-    "Total": 830,
-    "Subtotal": 790,
-    "DeliveryFee": 40,
-    "Status": "Pending",
-    "Date": "2020/05/05",
-    "Pancakes": [{
-      'Name': 'White Chocolate Chip Pancake',
-      'Quantity': 3,
-      'Price': 360, 
-    },
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 1,
-      'Price': 100, 
-    },
-    {
-      'Name': 'Nutela Pancake',
-      'Quantity': 3,
-      'Price': 340, 
-    },],
-  },
-  {
-    "Tracking_ID" : "RSTXYZ",
-    "Total": 380,
-    "Subtotal": 340,
-    "DeliveryFee": 40,
-    "Status": "Completed",
-    "Date": "2020/05/05",
-    "Pancakes": [{
-      'Name': 'White Chocolate Chip Pancake',
-      'Quantity': 2,
-      'Price': 170, 
-    },
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 1,
-      'Price': 100, 
-    },
-    ],
-  },
-  {
-    "Tracking_ID" : "12345",
-    "Total": 140,
-    "Subtotal": 100,
-    "DeliveryFee": 40,
-    "Status": "Completed",
-    "Date": "2020/05/05",
-    "Pancakes": [
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 1,
-      'Price': 100, 
-    },
-    ],
-  },
-  {
-    "Tracking_ID" : "ABCXYZ",
-    "Total": 360,
-    "Subtotal": 320,
-    "DeliveryFee": 40,
-    "Status": "Completed",
-    "Date": "2020/05/05",
-    "Pancakes": [{
-      'Name': 'Chocolate Chip Pancake',
-      'Quantity': 1,
-      'Price': 120, 
-    },
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 2,
-      'Price': 200, 
-    },
-    ],
-  },
-];
+List data ;
+
+var history_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/cart/history' ;
+Future <void> chech_history() async {
+  var response = await Requests.get(
+    history_url,
+  );
+  response.raiseForStatus();
+
+  dynamic j = response.json() ;
+
+  data = j['data'] as List ;
+}
 
 class Order extends StatefulWidget {
   @override
@@ -93,6 +32,8 @@ class _OrderState extends State<Order> {
   
   @override
   Widget build(BuildContext context) {
+
+    chech_history() ;
 
     // Variables for adjusting Screen width and Height according to different sizes
 
@@ -220,7 +161,7 @@ class _OrderMenuState extends State<OrderMenu> {
                   state: elem['Status'],
                   pancakes: elem['Pancakes'],
                   subtotal: elem['Subtotal'],
-                  delfee: elem['DeliveryFee'],
+                  delfee: elem['Deliveryfee'],
                 );
               },
           ),

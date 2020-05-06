@@ -3,6 +3,7 @@ import 'package:fluffs/Data/addons.dart';
 import 'package:fluffs/cart_1.dart';
 import 'package:fluffs/extra.dart';
 
+List toppings = [];
 
 // The Main class for Menu Two that gets the data from the previous Menu Screen
 // This uses a List View (Scrollable) inside a Scaffold and then uses multiple Row and Column Widgets to hold the the elements in their palce
@@ -24,7 +25,6 @@ class _MenuTwoState extends State<MenuTwo> {
     var hTH = MediaQuery.of(context).size.height;
     var blockWidth = wTH / 100;
     var blockHeight = hTH / 100;
-    
 
     return StreamBuilder(
       initialData: {"img" : widget.img, "name": widget.name, "subtitle": widget.subtitle, "price" : widget.price},
@@ -51,12 +51,13 @@ class _MenuTwoState extends State<MenuTwo> {
                     ),
                     IconButton(
                       onPressed: () {
-                        if (bloc.allItems.isNotEmpty) 
+                        if (bloc.allItems.isNotEmpty) {
                           Navigator.push(
                             context, MaterialPageRoute(
-                              builder: (context) => Cart(),
-                            ),
+                            builder: (context) => Cart(),
+                          ),
                           );
+                        }
                       },
                       icon: Stack(
 
@@ -142,8 +143,8 @@ class _MenuTwoState extends State<MenuTwo> {
                       itemBuilder: (BuildContext context, int index) {
                         Map addon = addons[index];
                         return AddonMenu(
-                          name: addon['name'],
-                          price: addon['price'],
+                          name: addon['Name'],
+                          price: addon['Price'],
                         );
 
                       },
@@ -260,17 +261,21 @@ class _CheckBoxesState extends State<CheckBoxes> {
               setState(() {
                 _value = !_value;
                 if (_value == true) {
+                  toppings.add({'Name':widget.name, 'Price': widget.price});
                   bloc.addCheckout({
                       "name" : widget.name,
                       "price" : widget.price
                     });
-                    print(bloc.checkoutItem);
+
                 }else if (_value == false) {
+
+                  toppings.remove({'Name':widget.name, 'Price': widget.price});
                     bloc.removeCheckout({
+
                       "name" : widget.name,
                       "price" : widget.price
                     });
-                    print(bloc.checkoutItem);
+
                 }
               });
             },
@@ -319,6 +324,8 @@ class _BottomBarState extends State<BottomBar> {
 
 
   int _number = 0;
+
+
 
 
   @override
@@ -392,13 +399,18 @@ class _BottomBarState extends State<BottomBar> {
                         height: blockHeight * 6,
                         child: RaisedButton(
                           onPressed: (){
+                              int sum = 0;
+                              for (Map i in toppings){
+                                sum = sum + i['Price'];
+                              }
 
-                              bloc.addToCart({"name" : widget.name, "price": widget.price*_number,"original":widget.price, "img" : widget.img,"number" : _number,"quan":quan});
-                              print(bloc.allItems);
+                              bloc.addToCart({"name" : widget.name, "price": widget.price*_number + sum,"original":widget.price + sum, "pure": widget.price,  "img" : widget.img,"number" : _number,"quan":quan, "toppings": toppings});
+
 
                               quan = quan + bloc.allItems[bloc.allItems.length-1]['number'];
+                              toppings = [];
+                              sum = 0;
 
-                              print(quan);
 
                           },
                           textColor: Colors.white,
@@ -456,7 +468,7 @@ class SettingMenuTwoCards extends StatelessWidget {
                 width: blockWidth * 30,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(blockWidth * 2),
-                  child: Image.asset(
+                  child: Image.network(
                     img,
                     fit: BoxFit.cover,
                   ),
