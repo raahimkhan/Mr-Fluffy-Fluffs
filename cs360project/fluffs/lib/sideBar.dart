@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluffs/Data/temp_1.dart';
-import 'package:fluffs/menu_1.dart';
+import 'package:fluffs/menu.dart';
 
 
 class SideBar extends StatelessWidget {
@@ -40,7 +40,7 @@ class SideBar extends StatelessWidget {
                 ),
                 onTap: (){
 
-                    temp.sort((a, b) => a['name'].compareTo(b['name']));
+                    menu.sort((a, b) => a['Name'].compareTo(b['Name']));
                     Navigator.push(
                         context, MaterialPageRoute(
                       builder: (BuildContext context) => Menu(),
@@ -62,7 +62,7 @@ class SideBar extends StatelessWidget {
                   textAlign:TextAlign.center,
                 ),
                 onTap: (){
-                  temp.sort((b,a)=>a['name'].compareTo(b['name']));
+                  menu.sort((b,a)=>a['Name'].compareTo(b['Name']));
                   Navigator.push(
                       context, MaterialPageRoute(
                     builder: (BuildContext context) => Menu(),
@@ -90,11 +90,8 @@ class SideBar extends StatelessWidget {
                   textAlign:TextAlign.center,
                 ),
                 onTap: (){
-                  temp.sort((a,b)=>a['price'].compareTo(b['price']));
-                  Navigator.push(
-                      context, MaterialPageRoute(
-                    builder: (BuildContext context) => Menu(),
-                  ));
+                  menu.sort((a,b)=>a['Price'].compareTo(b['Price']));
+
                 },
               ),
               ListTile(
@@ -107,11 +104,13 @@ class SideBar extends StatelessWidget {
                   textAlign:TextAlign.center,
                 ),
                 onTap: (){
-                  temp.sort((b,a)=>a['price'].compareTo(b['price']));
+                  menu.sort((b,a)=>a['Price'].compareTo(b['Price']));
                   Navigator.push(
                       context, MaterialPageRoute(
                     builder: (BuildContext context) => Menu(),
                   ));
+
+
                 },
               ),
             ],

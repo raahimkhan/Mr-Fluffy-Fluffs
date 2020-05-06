@@ -69,7 +69,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           },
           child: Icon(
             Icons.keyboard_arrow_left,
-            size: 45,
+            size: blockSizeHorizontal * 10,
             color: Color(0xffbb5e1e),
           ),
         ),
@@ -81,10 +81,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
 
-            SizedBox(height: 40),
+            SizedBox(height: blockSizeHorizontal * 4),
 
             Container(
-              height: blockSizeVertical * 54, //59
               color: Colors.white,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -93,7 +92,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   Center(
                     child: Container(
                       color: Colors.white,
-                      width: 320,
+                      width: blockSizeHorizontal * 90,
                       child: TextFormField(
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -120,7 +119,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           hintText: "Username",
                           hintStyle: TextStyle(
                             color: Colors.black,
-                            fontSize: 19,
+                            fontSize: blockSizeHorizontal * 6,
                             fontFamily: 'NunitoSansLight',
                           ),
                         ),
@@ -128,10 +127,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: blockSizeHorizontal * 4),
 
                   Container(
-                    width: 320,
+                    width: blockSizeHorizontal * 90,
                     child: TextFormField(
                       validator: (String value) {
                         if (value.isEmpty) {
@@ -154,17 +153,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         hintText: "Email",
                         hintStyle: TextStyle(
                           color: Colors.black,
-                          fontSize: 19,
+                          fontSize: blockSizeHorizontal * 6,
                           fontFamily: 'NunitoSansLight',
                         ),
                       ),
                     ),
                   ),
 
-                  SizedBox(height: 20),
+                  SizedBox(height: blockSizeHorizontal * 4),
 
                   Container(
-                    width: 320,
+                    width: blockSizeHorizontal * 90,
                     child: TextFormField(
                       validator: (String value) {
                         if (value.isEmpty) {
@@ -193,32 +192,32 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         hintText: "Phone number",
                         hintStyle: TextStyle(
                           color: Colors.black,
-                          fontSize: 19,
+                          fontSize: blockSizeHorizontal * 6,
                           fontFamily: 'NunitoSansLight',
                         ),
                       ),
                     ),
                   ),
 
-                  SizedBox(height: 50),
+                  SizedBox(height: blockSizeHorizontal * 8),
 
                   ProgressButton(
                     animate: true,
                     color: Color(0xffbb5e1e),
-                    defaultWidget: const Text(
+                    defaultWidget: Text(
                       'Submit',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 21.0,
+                        fontSize: blockSizeHorizontal * 6,
                         fontFamily: 'NunitoSansSemiBold',
                       ),
                     ),
                     progressWidget: const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
-                    width: 250,
-                    height: 53,
-                    borderRadius: 30.0,
+                    width: blockSizeHorizontal * 40,
+                    height: blockSizeHorizontal * 19,
+                    borderRadius: blockSizeHorizontal * 10,
                     onPressed: () async {
 
                       dynamic resp ;

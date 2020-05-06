@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluffs/cart_1.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:fluffs/menu_1.dart';
+import 'package:fluffs/menu.dart';
 import 'package:fluffs/profile.dart';
 import 'package:fluffs/extra.dart';
+import 'package:fluffs/Data/details.dart';
 import 'dart:async';
 import 'dart:collection';
 import 'package:requests/requests.dart' ;
@@ -61,11 +62,19 @@ class _HomeState extends State<Home> {
 
     if (j['msg'].contains('You must be logged in to access this feature')) {  // guest is logged in
       type = 'Guest' ;
+
+      // This data is being provided to the 'details.dart' screen which further supplies the data to cart screen
+      detailsPhone = '-' ;
+      detailsAddress = '-' ;
     }
 
     else { // user is logged in
       dynamic data = j['data'] ;
       type = data['FullName'] ;
+
+      // This data is being provided to the 'details.dart' screen which further supplies the data to cart screen
+      detailsPhone = data['MobileNo'] ;
+      detailsAddress = data['Address'] ;
     }
   }
 
@@ -182,7 +191,7 @@ class _HomeState extends State<Home> {
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
                               child: Text(
-                                bloc.allItems.length.toString(),
+                                  (bloc.allItems[bloc.allItems.length-1]['quan'] + bloc.allItems[bloc.allItems.length-1]['number']).toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: blockWidth * 2,
@@ -208,17 +217,20 @@ class _HomeState extends State<Home> {
             children: <Widget>[
              Container(
                child: SizedBox(
-                  height: blockHeight * 25,
+                  height: blockHeight * 30,
                   child: Image(
                     image: AssetImage(
                      "assets/pc.png",
+
                    ),
+
+
                  ),
                ),
              ),   
             ],
           ),
-          SizedBox(height: blockHeight * 4),
+          SizedBox(height: blockHeight/100 ),
 
           // For placing the buttons, a List View was used along with the Center widget. Each button allows the user to go to multiple screens  
 
@@ -228,7 +240,7 @@ class _HomeState extends State<Home> {
                 Center(
                     child: SizedBox(
                         width: blockWidth * 70,
-                        height: blockHeight * 7, 
+                        height: blockHeight * 7,
                         child: RaisedButton.icon(
                         onPressed: (){
 
@@ -252,7 +264,8 @@ class _HomeState extends State<Home> {
                             ) ;
                           }
                         }, 
-                        icon: Icon(Icons.fastfood), 
+                        icon: Icon(Icons.fastfood,
+                        color: Colors.white),
                         color: Color(0xffbb5e1e),
                         label: Text("Menu",
                         style: TextStyle(
@@ -261,16 +274,16 @@ class _HomeState extends State<Home> {
                           fontFamily: 'NunitoSansSemiBold',
                         )),
                         shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(blockWidth * 4)
+                        borderRadius: BorderRadius.circular(blockWidth * 100)
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: blockHeight * 2),
+                SizedBox(height: blockHeight * 3),
                 Center(
                     child: SizedBox(
                         width: blockWidth * 70,
-                        height: blockHeight * 7, 
+                        height: blockHeight * 7,
                         child: RaisedButton.icon(
                         onPressed: (){
 
@@ -309,7 +322,8 @@ class _HomeState extends State<Home> {
                           }
 
                         },
-                        icon: Icon(Icons.receipt), 
+                        icon: Icon(Icons.receipt,
+    color: Colors.white),
                         color: Color(0xffbb5e1e),
                         label: Text("Create your Own Pancake",
                         style: TextStyle(
@@ -318,16 +332,18 @@ class _HomeState extends State<Home> {
                           fontFamily: 'NunitoSansSemiBold',
                         )),
                         shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(blockWidth * 4)
+                        borderRadius: BorderRadius.circular(blockWidth * 100)
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: blockHeight * 2),
+                SizedBox(height: blockHeight * 3),
                 Center(
+
+
                     child: SizedBox(
                         width: blockWidth * 70,
-                        height: blockWidth * 12,
+                        height: blockWidth * 13.5,
                         child: RaisedButton.icon(
                         onPressed: (){
 
@@ -369,7 +385,8 @@ class _HomeState extends State<Home> {
                           }
 
                         }, 
-                        icon: Icon(Icons.star), 
+                        icon: Icon(Icons.star,
+    color: Colors.white,),
                         color: Color(0xffbb5e1e),
                         label: Text("Community Made Pancakes",
                         style: TextStyle(
@@ -378,12 +395,12 @@ class _HomeState extends State<Home> {
                           fontFamily: 'NunitoSansSemiBold',
                         )),
                         shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(blockWidth * 4)
+                        borderRadius: BorderRadius.circular(blockWidth * 100)
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: blockHeight * 3),
+                SizedBox(height: blockHeight*15 ),
                 lines(blockWidth),
                 SizedBox(height: blockHeight * 0.2),
                 Center(
@@ -391,7 +408,8 @@ class _HomeState extends State<Home> {
                   "For any queries call us on",
                   style: TextStyle(
                     fontSize: blockWidth * 4,
-                    color: Colors.black
+                    color: Colors.black,
+                      fontFamily: 'NunitoSansLight',
                 )),
               ),
               Center(
@@ -400,6 +418,7 @@ class _HomeState extends State<Home> {
                   style: TextStyle(
                     fontSize: blockWidth * 4,
                     color: Colors.orange,
+                    fontFamily: 'NunitoSansLight',
                 )),
               ),
               ],

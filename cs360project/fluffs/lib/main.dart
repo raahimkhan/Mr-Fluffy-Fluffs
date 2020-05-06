@@ -10,7 +10,7 @@ import 'package:fluffs/routes/ForgotPasswordScreen1.dart';
 import 'package:fluffs/routes/ForgotPasswordScreen2.dart';
 import 'package:fluffs/routes/home.dart';
 import 'package:fluffs/profile.dart';
-import 'package:fluffs/menu_1.dart' ;
+import 'package:fluffs/menu.dart' ;
 import 'package:fluffs/cart_1.dart' ;
 
 // Main only contains the routes that are in this application.

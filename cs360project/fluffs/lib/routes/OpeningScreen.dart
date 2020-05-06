@@ -62,31 +62,33 @@ class _OpeningScreenState extends State<OpeningScreen> {
           children: <Widget>[
             // Widget containing title and the logo
             Positioned(
-                width: MediaQuery.of(context).size.width,
-                top: MediaQuery.of(context).size.width * 0.1, // 10% of the screen reserved for title
+                width: blockSizeHorizontal * 100,
+                top: blockSizeHorizontal * 5, // 10% of the screen reserved for title
                 child: Container(
-                  margin: EdgeInsets.all(26.0),
+                  margin: EdgeInsets.all(blockSizeHorizontal * 6),
                   color: Colors.white,
                   child:Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
 
-                        SizedBox(height: 20),
+                        SizedBox(height: blockSizeHorizontal * 5),
 
                         Text(
                             "Mr. Fluffy Fluffs",
                             style: TextStyle(
-                                fontSize: 47.0, color: Color(0xffbb5e1e),fontFamily: 'NunitoSansLight')
+                                fontSize: blockSizeHorizontal * 10, color: Color(0xffbb5e1e),fontFamily: 'NunitoSansLight')
                         ),
 
                         Container(
                           // Similarly height and width fixed for the logo
                           height: blockSizeVertical * 70,
-                          width: blockSizeHorizontal * 100,
+                          width: blockSizeHorizontal * 70,
                           color: Colors.white,
                           child: Align(
-                              alignment: Alignment(-2.4, -3.3),
-                              child: Image.asset('assets/loading_screen.png', scale: 2.63)
+                              alignment: Alignment(0, -blockSizeHorizontal * 0.74),
+                              child: Image.asset('assets/loading_screen.png', 
+                                fit: BoxFit.contain,
+                              )
                           ),
                         ),
                       ]
@@ -95,14 +97,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
             ),
 
             Align(
-              alignment: Alignment(0.0, -0.0), // 0.88, 0.4
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.01), // 0.88, 0.4
               child: ProgressButton(
                 animate: true,
                 color: Color(0xffbb5e1e),
-                defaultWidget: const Text(
+                defaultWidget: Text(
                   'Log in',
                   style: TextStyle(
-                    fontSize: 19.0,
+                    fontSize: blockSizeHorizontal * 5,
                     fontFamily: 'NunitoSansSemiBold',
                     color: Colors.white,
                   ),
@@ -112,9 +114,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 progressWidget: const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
-                width: 230,
-                height: 53,
-                borderRadius: 30.0,
+                width: blockSizeHorizontal * 75,
+                height: blockSizeHorizontal * 12.5,
+                borderRadius: blockSizeHorizontal * 10,
                 onPressed: () async {
                   await Future.delayed(
                       const Duration(milliseconds: 2000), () => {}) ;
@@ -127,14 +129,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
             ),
 
             Align(
-              alignment: Alignment(0.0, 0.2), // 0.88, 0.4
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.065), // 0.88, 0.4
               child: ProgressButton(
                 animate: true,
                 color: Color(0xffbb5e1e),
-                defaultWidget: const Text(
+                defaultWidget: Text(
                   'Sign up',
                   style: TextStyle(
-                    fontSize: 19.0,
+                    fontSize: blockSizeHorizontal * 5,
                     fontFamily: 'NunitoSansSemiBold',
                     color: Colors.white,
                   ),
@@ -142,15 +144,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 progressWidget: const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
-                width: 230,
-                height: 53,
-                borderRadius: 30.0,
+                width: blockSizeHorizontal * 75,
+                height: blockSizeHorizontal * 12,
+                borderRadius: blockSizeHorizontal * 10,
                 onPressed: () async {
                   await Future.delayed(
                       const Duration(milliseconds: 2000), () => {}) ;
                   // After [onPressed], it will trigger animation running backwards, from end to beginning
                   return () {
-                    Navigator.of(context).pushReplacementNamed('/signup_screen1') ;
+                    Navigator.of(context).pushReplacementNamed('/signup_screen2') ;
                   };
 
                 },
@@ -158,14 +160,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
             ),
 
             Align(
-              alignment: Alignment(0.0, 0.4), // 0.88, 0.4
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.12), // 0.88, 0.4
               child: ProgressButton(
                 animate: true,
                 color: Color(0xffbb5e1e),
-                defaultWidget: const Text(
+                defaultWidget: Text(
                   'Log in as a guest',
                   style: TextStyle(
-                    fontSize: 17.0,
+                    fontSize: blockSizeHorizontal * 5,
                     fontFamily: 'NunitoSansSemiBold',
                     color: Colors.white,
                   ),
@@ -173,9 +175,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 progressWidget: const CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
-                width: 230,
-                height: 53,
-                borderRadius: 30.0,
+                width: blockSizeHorizontal * 75,
+                height: blockSizeHorizontal * 12.5,
+                borderRadius: blockSizeHorizontal * 10,
                 onPressed: () async {
                   dynamic resp ;
                   resp = await Future.delayed(
@@ -203,7 +205,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
                     }
 
                     else if (resp['status'] == "True") {
-                      Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                      Navigator.of(context).pushReplacementNamed('/forgotpassword_screen1') ;
                     }
 
                   };
@@ -213,42 +215,42 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
             // This is a divider widget
             Align(
-              alignment: Alignment(0.0, 0.6),
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.175),
               child: Divider(
                 color: Color(0xffbb5e1e),
-                thickness: 1.2,
-                indent: 30,
-                endIndent: 235,
+                thickness: blockSizeHorizontal * 0.35,
+                indent: blockSizeHorizontal * 4,
+                endIndent: blockSizeHorizontal * 55,
               ),
             ),
 
             Align(
-              alignment: Alignment(0.0, 0.6),
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.175),
               child: Text(
                 'or',
                 style: TextStyle(
-                  fontSize: 24.0,
+                  fontSize: blockSizeHorizontal * 4,
                   fontFamily: 'NunitoSansLight',
                 ),
               ),
             ),
 
             Align(
-              alignment: Alignment(0.0, 0.6),
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.175),
               child: Divider(
                 color: Color(0xffbb5e1e),
-                thickness: 1.2,
-                indent: 235,
-                endIndent: 30,
+                thickness: blockSizeHorizontal * 0.35,
+                indent: blockSizeHorizontal * 55,
+                endIndent: blockSizeHorizontal * 4,
               ),
             ),
 
             Align(
-              alignment: Alignment(0.0, 0.71),
+              alignment: Alignment(0.0, blockSizeHorizontal * 0.195),
               child: Text(
                 'Sign in with',
                 style: TextStyle(
-                  fontSize: 24.0,
+                  fontSize: blockSizeHorizontal * 4,
                   fontFamily: 'NunitoSansLight',
                 ),
               ),
@@ -256,16 +258,16 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
             // Sign in with Facebook yet to be implemented
             Align(
-              alignment: Alignment(-0.3, 0.93),
+              alignment: Alignment(-blockSizeHorizontal * 0.1, blockSizeHorizontal * 0.29),
               child: GestureDetector(
                 onTap: () => {},
                 child: Container(
-                  height: 60.0,
-                  width: 60.0,
+                  height: blockSizeHorizontal * 30,
+                  width: blockSizeHorizontal * 15,
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.grey[600],
-                        width: 3.6,
+                        width: blockSizeHorizontal * 0.4,
                       ),
                       shape: BoxShape.circle,
                       color: Colors.white,
@@ -279,16 +281,16 @@ class _OpeningScreenState extends State<OpeningScreen> {
 
             // Sign in with Google yet to be implemented
             Align(
-              alignment: Alignment(0.3, 0.93),
+              alignment: Alignment(blockSizeHorizontal * 0.1, blockSizeHorizontal * 0.29),
               child: GestureDetector(
                 onTap: () => print('Heyy!'),
                 child: Container(
-                  height: 60.0,
-                  width: 60.0,
+                  height: blockSizeHorizontal * 30,
+                  width: blockSizeHorizontal * 15,
                   decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.grey[600],
-                        width: 3.6,
+                        width: blockSizeHorizontal * 0.4,
                       ),
                       shape: BoxShape.circle,
                       color: Colors.white,
