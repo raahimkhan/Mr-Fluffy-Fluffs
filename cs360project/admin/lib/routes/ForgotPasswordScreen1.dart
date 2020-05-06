@@ -81,7 +81,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
           },
           child: Icon(
             Icons.keyboard_arrow_left,
-            size: 45,
+            size: blockSizeHorizontal * 10,
             color: Color(0xffbb5e1e),
           ),
         ),
@@ -97,8 +97,8 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
           ),
 
           Container(
-            height: blockSizeVertical * 65,
-            width: blockSizeHorizontal * 100,
+            // height: blockSizeVertical * 65,
+            width: blockSizeHorizontal * 80,
             color: Colors.white,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -107,7 +107,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
                   Text(
                     'Please Enter the 5-digit',
                     style: TextStyle(
-                      fontSize: 38,
+                      fontSize: blockSizeHorizontal * 6,
                       fontFamily: 'NunitoSansSemiBold',
                       color: Color(0xffbb5e1e),
                     ),
@@ -116,7 +116,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
                   Text(
                     'verification code sent',
                     style: TextStyle(
-                      fontSize: 38,
+                      fontSize: blockSizeHorizontal * 6,
                       fontFamily: 'NunitoSansSemiBold',
                       color: Color(0xffbb5e1e),
                     ),
@@ -125,13 +125,13 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
                   Text(
                     'on your SMS',
                     style: TextStyle(
-                      fontSize: 38,
+                      fontSize: blockSizeHorizontal * 6,
                       fontFamily: 'NunitoSansSemiBold',
                       color: Color(0xffbb5e1e),
                     ),
                   ),
 
-                  SizedBox(height: 43) ,
+                  SizedBox(height: blockSizeHorizontal * 5) ,
 
                   PinEntryTextField(
                     fields: 5,
@@ -141,25 +141,25 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
                     },
                   ),
 
-                  SizedBox(height: 55) ,
+                  SizedBox(height: blockSizeHorizontal * 7) ,
 
                   ProgressButton(
                     animate: true,
                     color: Color(0xffbb5e1e),
-                    defaultWidget: const Text(
+                    defaultWidget: Text(
                       'Submit',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 23.0,
+                        fontSize: blockSizeHorizontal * 3,
                         fontFamily: 'NunitoSansSemiBold',
                       ),
                     ),
                     progressWidget: const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
-                    width: 190,
-                    height: 54,
-                    borderRadius: 30.0,
+                    width: blockSizeHorizontal * 20,
+                    height: blockSizeHorizontal * 6,
+                    borderRadius: blockSizeHorizontal * 10,
                     onPressed: () async {
                       dynamic resp ;
                       bool verified = false ;
@@ -195,7 +195,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
                     },
                   ),
 
-                  SizedBox(height: 20) ,
+                  SizedBox(height: blockSizeHorizontal * 3) ,
 
                   FlatButton(
                     onPressed: () async {
@@ -210,7 +210,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
                     child: Text(
                       'Resend SMS',
                       style: TextStyle(
-                        fontSize: 20.0,
+                        fontSize: blockSizeHorizontal * 4,
                         fontFamily: 'NunitoSansLight',
                         color: Colors.black,
                       ),
