@@ -77,6 +77,7 @@ class _ProfileState extends State<Profile> {
 
   void initState() {
     check_status() ;
+    check_history() ;
   }
 
   @override

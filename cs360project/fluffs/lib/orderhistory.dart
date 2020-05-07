@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart' ;
 List data ;
 
 var history_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/cart/history' ;
-Future <void> chech_history() async {
+Future <void> check_history() async {
   var response = await Requests.get(
     history_url,
   );
@@ -32,8 +32,6 @@ class _OrderState extends State<Order> {
   
   @override
   Widget build(BuildContext context) {
-
-    chech_history() ;
 
     // Variables for adjusting Screen width and Height according to different sizes
 
