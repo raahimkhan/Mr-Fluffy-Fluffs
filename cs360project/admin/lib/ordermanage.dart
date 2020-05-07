@@ -1,89 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:admin/receipt.dart';
+import 'package:admin/Data/orderUtility.dart' ;
 
-List data = [
-  {
-    "Tracking_ID" : "ABCXYZ",
-    "Total": 830,
-    "Subtotal": 790,
-    "DeliveryFee": 40,
-    "Status": "Pending",
-    "Date": "2020/05/05",
-    "Pancakes": [{
-      'Name': 'White Chocolate Chip Pancake',
-      'Quantity': 3,
-      'Price': 360, 
-    },
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 1,
-      'Price': 100, 
-    },
-    {
-      'Name': 'Nutela Pancake',
-      'Quantity': 3,
-      'Price': 340, 
-    },],
-  },
-  {
-    "Tracking_ID" : "RSTXYZ",
-    "Total": 380,
-    "Subtotal": 340,
-    "DeliveryFee": 40,
-    "Status": "Completed",
-    "Date": "2020/05/05",
-    "Pancakes": [{
-      'Name': 'White Chocolate Chip Pancake',
-      'Quantity': 2,
-      'Price': 170, 
-    },
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 1,
-      'Price': 100, 
-    },
-    ],
-  },
-  {
-    "Tracking_ID" : "12345",
-    "Total": 140,
-    "Subtotal": 100,
-    "DeliveryFee": 40,
-    "Status": "Completed",
-    "Date": "2020/05/05",
-    "Pancakes": [
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 1,
-      'Price': 100, 
-    },
-    ],
-  },
-  {
-    "Tracking_ID" : "ABCXYZ",
-    "Total": 360,
-    "Subtotal": 320,
-    "DeliveryFee": 40,
-    "Status": "Completed",
-
-    "Date": "2020/05/05",
-    "Pancakes": [{
-      'Name': 'Chocolate Chip Pancake',
-      'Quantity': 1,
-      'Price': 120, 
-    },
-    {
-      'Name': 'Fluffy Pancake',
-      'Quantity': 2,
-      'Price': 200, 
-    },
-    ],
-  },
-];
-List temp = data;
-List temp1 = data;
-
-
+List temp = ordersPending ;
+List temp1 = ordersDone ;
 
 class OrderManage extends StatefulWidget {
   @override
@@ -185,7 +105,7 @@ class _OrderManageState extends State<OrderManage> {
                                 name = emailController.text;
 
                                 if (name.isEmpty){
-                                  temp = data;
+                                  temp = ordersPending;
                                 }
                                 else {
                                   List<Map> temp2 = [];
@@ -205,7 +125,7 @@ class _OrderManageState extends State<OrderManage> {
                                   temp = temp2;
                                 }
                               });
-                              print(name);
+
                             },
                           ),
                         ),
@@ -247,7 +167,7 @@ class _OrderManageState extends State<OrderManage> {
                           name = emailController_2.text;
 
                         if (name.isEmpty){
-                        temp1 = data;
+                        temp1 = ordersDone;
                         }
                         else {
                         List<Map> temp2 = [];
@@ -269,7 +189,6 @@ class _OrderManageState extends State<OrderManage> {
                         temp1 = temp2;
                         }
                         });
-                        print(name);
                         },
                         ),
                                               ),
@@ -311,7 +230,7 @@ class _OrderManageMenuState extends State<OrderManageMenu> {
                   price: elem['Total'],
                   pancakes: elem['Pancakes'],
                   subtotal: elem['Subtotal'],
-                  delfee: elem['DeliveryFee'],
+                  delfee: elem['Deliveryfee'],
                 );
               },
           ),
@@ -339,14 +258,16 @@ class _OrderManageMenuTwoState extends State<OrderManageMenuTwo> {
               itemCount: temp1 == null ? 0 :temp1.length,
               itemBuilder: (BuildContext context, int index) {
                 Map elem = temp1[index];
-                return OrderManageMenuTwoSetup(
-                  id: elem['Tracking_ID'],
-                  date: elem['Date'],
-                  price: elem['Total'],
-                  pancakes: elem['Pancakes'],
-                  subtotal: elem['Subtotal'],
-                  delfee: elem['DeliveryFee'],
-                );
+
+                  return OrderManageMenuTwoSetup(
+                    id: elem['Tracking_ID'],
+                    date: elem['Date'],
+                    price: elem['Total'],
+                    pancakes: elem['Pancakes'],
+                    subtotal: elem['Subtotal'],
+                    delfee: elem['Deliveryfee'],
+                  );
+
               },
           ),
         ],
@@ -404,15 +325,32 @@ class OrderManageMenuSetup extends StatelessWidget {
           Column(
             children: <Widget>[
               RaisedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context, MaterialPageRoute(
-                      builder: (context) => Receipt(date:date, pancakes:pancakes, subtotal:subtotal, delfee:delfee, total:price),
-                    ),
-                  );
+                onPressed: () async {
+                  var body = { 'order': {'Status':  'Completed'} } ;
+                    dynamic resp = await confirmOrder("$id",  body) ;
+
+                  AlertDialog alert = AlertDialog(
+                    title: Text('Order completed.'),
+                    actions: [
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop() ;
+                          Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                        }, child: Text('Ok'),
+                      ),
+                    ],
+                  ) ;
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert ;
+                    },
+                  ) ;
+
                 },
                 child: Text(
-                  "Details",
+                  "Confirm",
                   style:  TextStyle(
                     color: Colors.white,
                   ),
@@ -424,10 +362,14 @@ class OrderManageMenuSetup extends StatelessWidget {
               ),
               RaisedButton(
                 onPressed: () {
-                  print("Cancel");
+                  Navigator.push(
+                    context, MaterialPageRoute(
+                    builder: (context) => Receipt(date:date, pancakes:pancakes, subtotal:subtotal, delfee:delfee, total:price),
+                  ),
+                  );
                 },
                 child: Text(
-                  "Cancel",
+                  "Details",
                   style:  TextStyle(
                     color: Colors.white,
                   ),
