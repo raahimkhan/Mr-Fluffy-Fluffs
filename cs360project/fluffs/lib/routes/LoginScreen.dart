@@ -316,7 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              SizedBox(height: blockWidth * 0.5),
+              SizedBox(height: blockWidth * 3.5),
 
               // // Yet to be implemented
               Align(
@@ -327,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(
-                      fontSize: blockWidth * 4,
+                      fontSize: blockWidth * 5,
                       fontFamily: 'NunitoSansLight',
                       color: Colors.black,
                     ),
@@ -336,20 +336,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              SizedBox(height: blockWidth * 0.5),
+              SizedBox(height: blockWidth * 1.5),
 
               Align(
                 child: Text(
                   "Don't have an account yet?",
                   style: TextStyle(
-                    fontSize: blockWidth * 3.5,
+                    fontSize: blockWidth * 4.5,
                     fontFamily: 'NunitoSansLight',
                     color: Colors.black,
                   ),
                 ),
               ),
 
-              SizedBox(height: blockWidth * 0.5),
+              SizedBox(height: blockWidth * 1.5),
 
               Align(
                 child: FlatButton(
@@ -359,7 +359,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Sign up',
                     style: TextStyle(
-                      fontSize: blockWidth * 4,
+                      fontSize: blockWidth * 5,
                       fontFamily: 'NunitoSansLight',
                       color: Color(0xffbb5e1e),
                     ),
