@@ -13,7 +13,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void switchScreen() {
-    Navigator.of(context).pushReplacementNamed('/home_screen');
+    Navigator.of(context).pushReplacementNamed('/opening_screen');
   }
 
   @override

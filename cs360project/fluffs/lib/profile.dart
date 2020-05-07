@@ -154,7 +154,7 @@ class _ProfileState extends State<Profile> {
                 lines(blockWidth),
                 tiles("Order History", Order()),
                 lines(blockWidth),
-                tiles("Review History", Cart()),
+                tiles("Review History", Order()),
                 lines(blockWidth),
                 FlatButton(
                     onPressed: () async {
@@ -225,6 +225,16 @@ Widget tiles(String name, Widget wid) {
 
               if ((name == "Privacy Settings" || name == "Order History" || name == "Review History") && type == "Guest") {
                 AlertDialog msg = display_result('Please signup to access this features') ;
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return msg ;
+                  },
+                ) ;
+              }
+
+              else if (name == "Review History" && type != 'Guest') {
+                AlertDialog msg = display_result('Coming Soon') ;
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {

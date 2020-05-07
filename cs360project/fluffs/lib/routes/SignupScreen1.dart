@@ -53,6 +53,7 @@ class _SignupScreen1State extends State<SignupScreen1> {
     var response = await Requests.put(
         url,
         body: body,
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

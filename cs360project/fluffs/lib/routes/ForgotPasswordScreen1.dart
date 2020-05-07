@@ -36,11 +36,11 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
     return alert ;
   }
 
-  int pin  = 000000 ;
-  int test ;
+  int pin  = 000000 ; // initialized pin (will be changed according to what user enters)
+  int test ; // pin used if resend button is pressed
 
-  String number ;
-  int twilio_code ;
+  String number ; // user's phone number
+  int twilio_code ; // pin that came. This will have to match with what user enters
   bool rs = false ; // whether resend button used or not
 
   var resend_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/resend' ;
@@ -53,6 +53,7 @@ class _ForgotPasswordScreen1State extends State<ForgotPasswordScreen1> {
             "MobileNo": number
           }
         },
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

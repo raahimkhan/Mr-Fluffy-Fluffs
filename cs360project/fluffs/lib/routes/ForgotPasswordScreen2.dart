@@ -24,6 +24,8 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
     blockSizeVertical = screenHeight / 100;
   }
 
+  // These both are same
+  // Second one is just for confirmation that whether it matches with first one or not
   String password ;
   String password2 ;
 
@@ -35,6 +37,7 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
     var response = await Requests.patch(
         patch_url,
         body: body,
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

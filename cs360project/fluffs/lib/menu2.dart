@@ -5,6 +5,15 @@ import 'package:fluffs/extra.dart';
 
 List toppings = [];
 
+Widget lines(wTH) {
+  return Divider(
+    thickness: 0.4,
+    color: Colors.black,
+    indent: wTH * 0.04,
+    endIndent: wTH * 0.05,
+  );
+}
+
 // The Main class for Menu Two that gets the data from the previous Menu Screen
 // This uses a List View (Scrollable) inside a Scaffold and then uses multiple Row and Column Widgets to hold the the elements in their palce
 
@@ -102,21 +111,29 @@ class _MenuTwoState extends State<MenuTwo> {
                   ],
                 ),
               ),
+              lines(blockWidth),
+
               Row(
               mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget> [
                 Container(
                   padding: EdgeInsets.only(left: blockWidth * 1), 
+                    child:Padding(
+                      padding: EdgeInsets.only(left: blockWidth* 3),
                     child: Text(
                     "Extra Toppings",
                     style: TextStyle(
-                      fontSize: blockWidth * 4,
+
+                      fontSize: blockWidth * 5,
                       fontWeight: FontWeight.bold,
-                      color: Colors.brown[400],
+                      color: Color(0xffbb5e1e),
                       fontFamily: "NunitoSans-SemiBold"
                     ),
                   ),
+                    )
+
                 ),
+                  SizedBox(height: blockHeight*4),
               ],
             ),
 //            Row(
@@ -135,6 +152,7 @@ class _MenuTwoState extends State<MenuTwo> {
 //              ],
 //            ),
             Column(
+
               children: <Widget>[
                 ListView.builder(
                       primary: false,
@@ -146,6 +164,8 @@ class _MenuTwoState extends State<MenuTwo> {
                           name: addon['Name'],
                           price: addon['Price'],
                         );
+
+
 
                       },
                 ),
@@ -189,7 +209,7 @@ class _AddonMenuState extends State<AddonMenu> {
               Row(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(left: blockWidth* 1),
+                    padding: EdgeInsets.only(left: blockWidth* 3),
                     child: CheckBoxes(name: widget.name, price: widget.price),
                   ),
                   SizedBox(width: blockWidth* 2),
@@ -197,7 +217,7 @@ class _AddonMenuState extends State<AddonMenu> {
                     widget.name,
                     style: TextStyle(
                       fontSize: blockWidth* 4,
-                      color: Colors.brown[300],
+                      color: Color(0xffbb5e1e),
                     ),
                   ),
                 ],
@@ -206,7 +226,7 @@ class _AddonMenuState extends State<AddonMenu> {
                 children: <Widget>[
                   Icon(
                     Icons.add,
-                    color: Colors.brown[200],
+                    color: Color(0xffbb5e1e),
                     size: blockWidth* 3,
                   ),
                   Padding(
@@ -214,12 +234,14 @@ class _AddonMenuState extends State<AddonMenu> {
                     child: Text(
                       "Rs ${widget.price}",
                       style: TextStyle(
+                        fontFamily: 'NunitoSansSemiBold',
                         fontWeight: FontWeight.bold,
-                        fontSize: blockWidth* 3,
-                        color: Colors.brown[400],
+                        fontSize: blockWidth* 3.5,
+                        color: Color(0xffbb5e1e),
                       ),
                     ),
                   ),
+                  SizedBox(height:  (MediaQuery.of(context).size.height/100) * 5),
                 ],
               ),
             ],
@@ -281,16 +303,15 @@ class _CheckBoxesState extends State<CheckBoxes> {
             },
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(width: blockWidth * 0.5, color: Colors.black),
+                border: Border.all(width: blockWidth *0.15, color: Colors.black),
                 borderRadius: BorderRadius.circular(blockWidth * 6),
               ),
               child: _value
                 ? Container(
-                    color: Color(0xffbb5e1e),
                     child: Icon(
                       Icons.check,
-                      size: Checkbox.width,
-                      color: Colors.white,
+                      size: Checkbox.width-5,
+                      color: Color(0xffbb5e1e),
                     ))
                 : Icon(
                     Icons.check_box_outline_blank,
@@ -323,7 +344,7 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
 
 
-  int _number = 0;
+  int _number = 1;
 
 
 
@@ -395,7 +416,7 @@ class _BottomBarState extends State<BottomBar> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, blockHeight * 0.8, 0, blockHeight * 1.2),
                       child: SizedBox(
-                        width: blockWidth * 30,
+                        width: blockWidth * 40,
                         height: blockHeight * 6,
                         child: RaisedButton(
                           onPressed: (){
@@ -419,7 +440,7 @@ class _BottomBarState extends State<BottomBar> {
                             child: Text(
                               'Add To Cart',
                               style: TextStyle(
-                                fontSize: blockWidth * 3,
+                                fontSize: blockWidth * 4,
                                 fontFamily: 'NunitoSansSemiBold',
                               ),
                             ),
@@ -464,7 +485,7 @@ class SettingMenuTwoCards extends StatelessWidget {
               // For Text Padding
               padding: EdgeInsets.only(left: 0.0, right: blockWidth * 1.5),
               child: Container(
-                height: blockWidth * 40,
+                height: blockWidth * 30,
                 width: blockWidth * 30,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(blockWidth * 2),
@@ -487,7 +508,7 @@ class SettingMenuTwoCards extends StatelessWidget {
                   style: TextStyle(
                    fontSize: blockWidth * 4,
                     fontWeight: FontWeight.bold,
-                    color: Colors.brown[400],
+                    color: Color(0xffbb5e1e),
                     fontFamily: 'NunitoSans-SemiBold',
                   ),
                 ),
@@ -500,7 +521,7 @@ class SettingMenuTwoCards extends StatelessWidget {
                       style: TextStyle(
                         fontSize: blockWidth * 3,
                         fontWeight: FontWeight.w300,
-                        color: Colors.brown[400],
+                        color: Color(0xffbb5e1e),
                         fontFamily: 'NunitoSans-Regular',
                       ),
                     ),
@@ -513,12 +534,12 @@ class SettingMenuTwoCards extends StatelessWidget {
                     Padding(
                        padding: EdgeInsets.only(right: blockWidth * 2),
                        child: Text(
-                       "$price",
+                       'Rs ' + "$price",
                        overflow: TextOverflow.ellipsis,
                        style: TextStyle(
                          fontSize: blockWidth * 4,
                          fontWeight: FontWeight.bold,
-                         color: Colors.brown[400],
+                         color: Color(0xffbb5e1e),
                          fontFamily: 'NunitoSans-SemiBold',
                        ),
                      ),

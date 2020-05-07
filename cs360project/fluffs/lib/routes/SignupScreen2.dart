@@ -36,13 +36,13 @@ class _SignupScreen2State extends State<SignupScreen2> {
     return alert ;
   }
 
-  int pin  = 000000 ;
-  int test ;
+  int pin  = 000000 ; // Initial pin. It will change according to what user enters.
+  int test ; // pin used if resend button used
 
   String number ;
   String username ;
   String password ;
-  int twilio_code ;
+  int twilio_code ; // original code received that HAS to match with what user enters to proceed
   bool rs = false ; // whether resend button used or not
 
   var verify_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/user/verify' ;
@@ -50,6 +50,7 @@ class _SignupScreen2State extends State<SignupScreen2> {
   Future <dynamic> verify() async {
     var response = await Requests.post(
       verify_url,
+      timeoutSeconds: 25
     ) ;
 
     dynamic j = response.json() ;
@@ -66,6 +67,7 @@ class _SignupScreen2State extends State<SignupScreen2> {
             "MobileNo": number
           }
         },
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

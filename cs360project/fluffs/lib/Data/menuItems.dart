@@ -1,4 +1,6 @@
 
+// Dummy data. Not being used anywhere
+
 List<Map> menuItems = [
   {
     "img": "assets/fluffyPancake.jpg",

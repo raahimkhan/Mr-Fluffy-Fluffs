@@ -68,7 +68,7 @@ class _LeaderboardState extends State<Leaderboard> {
               children: <Widget>[
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).pushReplacementNamed('/home_screen') ;
                   },
                   icon: Icon(Icons.keyboard_arrow_left, size: blockWidth * 10),
                   color: Colors.red[200],

@@ -411,13 +411,17 @@ class _UserMenuState extends State<UserMenu> {
             children: <Widget> [
               Container(
 
-             child:  Text('Phone',
+             child:Padding(
+               padding: EdgeInsets.only(left: blockWidth* 3),
+               child:
+             Text('Phone',
                 style: TextStyle(
-                  fontSize: blockWidth * 3.5,
+                  fontSize: blockWidth * 4,
                   fontWeight: FontWeight.bold,
                   color: Color(0xffbb5e1e),
                   fontFamily: 'NunitoSansSemiBold',
                 ),),
+             )
               ),
 
     Flexible(
@@ -448,13 +452,18 @@ class _UserMenuState extends State<UserMenu> {
           lines(blockWidth),
           Row(
             children: <Widget> [
+              Padding(
+                padding: EdgeInsets.only(left: blockWidth* 3),
+                child:
+
               Text('Destination Address',
                 style: TextStyle(
-                  fontSize: blockWidth * 3.5,
+                  fontSize: blockWidth * 4,
                   fontWeight: FontWeight.bold,
                   color: Color(0xffbb5e1e),
                   fontFamily: 'NunitoSansSemiBold',
                 ),),
+              ),
 
               Flexible(
           child: Align(
@@ -486,6 +495,9 @@ class _UserMenuState extends State<UserMenu> {
           lines(blockWidth),
           Row(
             children: <Widget> [
+              Padding(
+                padding: EdgeInsets.only(left: blockWidth* 3),
+                child:
               Text('Payment Method',
                 style: TextStyle(
                   fontSize: blockWidth * 4.0,
@@ -493,6 +505,7 @@ class _UserMenuState extends State<UserMenu> {
                   color: Color(0xffbb5e1e),
                   fontFamily: 'NunitoSansSemiBold',
                 ),),
+              ),
               Flexible(
                 child: Align(
                   alignment : Alignment.topRight,
@@ -599,22 +612,10 @@ class _OrderButtonState extends State<OrderButton> {
           Padding(
             padding: EdgeInsets.fromLTRB(0, blockHeight * 0.8, 0, blockHeight * 1.2),
             child: SizedBox(
-              width: blockWidth * 25,
-              height: blockHeight * 5,
+              width: blockWidth * 40,
+              height: blockHeight *6,
               child: RaisedButton(
-                onPressed: (){
-
-                  AlertDialog alert = AlertDialog(
-                    title: Text('Your Order has been placed successfully, you will recieve an SMS confirming this.'),
-                    actions: [
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.of(context).pushReplacementNamed('/home_screen') ;
-                          bloc.allItems = [];
-                        }, child: Text('Ok'),
-                      ),
-                    ],
-                  ) ;
+                onPressed: () async {
 
                   Map Final = {};
                   Map cart = {};
@@ -634,9 +635,40 @@ class _OrderButtonState extends State<OrderButton> {
                   Final['cart'] = cart;
                   String jsonStr = jsonEncode(Final);
 
-                  http.put(Uri.encodeFull('http://mr-fluffy-fluffs.herokuapp.com/api/user/cart'), body: jsonStr , headers: { "Content-Type" : "application/json"}).then((result) {
-                    print(result.body) ;
+                  dynamic resp ;
+
+                  await http.put(Uri.encodeFull('http://mr-fluffy-fluffs.herokuapp.com/api/user/cart'), body: jsonStr , headers: { "Content-Type" : "application/json"}).then((result) {
+                    resp = jsonDecode(result.body) ;
                   });
+
+                  String message ;
+
+                  if (resp['msg'] == 'MobileNo not reachable') {
+                    message = 'Please enter correct Mobile Number.' ;
+                  }
+
+                  else {
+                    message = 'Your Order has been placed successfully, you will recieve an SMS confirming this.' ;
+                  }
+
+                  AlertDialog alert = AlertDialog(
+                    title: Text(message),
+                    actions: [
+                      RaisedButton(
+                        onPressed: () {
+                          if (message == 'Your Order has been placed successfully, you will recieve an SMS confirming this.') {
+                            Navigator.of(context).pushReplacementNamed('/home_screen') ;
+                            bloc.allItems = [];
+                          }
+
+                          else {
+                            Navigator.of(context).pop() ;
+                            Navigator.of(context).pushReplacementNamed('/cart_1') ;
+                          }
+                        }, child: Text('Ok'),
+                      ),
+                    ],
+                  ) ;
 
                   showDialog(
                     context: context,
