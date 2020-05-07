@@ -300,7 +300,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
                 Column(
                   children: <Widget>[
                     GestureDetector(
-                      onTap: () => print('Heyy!'),
+                      onTap: () => {},
                       child: Container(
                         height: blockSizeHorizontal * 30,
                         width: blockSizeHorizontal * 15,

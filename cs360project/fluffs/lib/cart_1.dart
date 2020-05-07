@@ -145,7 +145,7 @@ class _CartMenuState extends State<CartMenu> {
     var blockHeight = hTH / 100;
     int n = widget.number;
      if(bloc.allItems.length ==0) {
-       print('Empty');
+
        return Container();
      }
 
