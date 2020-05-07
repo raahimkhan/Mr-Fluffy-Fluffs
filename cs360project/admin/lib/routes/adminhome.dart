@@ -7,6 +7,7 @@ import 'dart:collection';
 import 'package:requests/requests.dart' ;
 import 'package:shared_preferences/shared_preferences.dart' ;
 import 'package:admin/Data/menuItems.dart';
+import 'package:admin/Data/orderUtility.dart' ;
 
 class AdminHome extends StatefulWidget {
   @override
@@ -56,6 +57,8 @@ class _AdminHomeState extends State<AdminHome> {
     var hTH = MediaQuery.of(context).size.height;
     var blockWidth = wTH / 100;
     var blockHeight = hTH / 100;
+
+    getOrders() ; // function in orderUtility.dart to get all order histories
 
     return new Material(
         child: new FutureBuilder <dynamic> (
@@ -147,6 +150,14 @@ Widget profileIcon(wTH) {
   );
 }
 
+AlertDialog display_result(String message) {
+  AlertDialog alert = AlertDialog (
+    content: Text(message),
+  ) ;
+
+  return alert ;
+}
+
 // This is a manually constructed widget that is used for creating same type of buttons
 
 Widget tiles(String name, Widget wid) {
@@ -156,11 +167,35 @@ Widget tiles(String name, Widget wid) {
         var blockWidth = wTH / 100;
         return FlatButton(
           onPressed: () {
-            Navigator.push(
-              context,MaterialPageRoute(
+            if (name != 'Order Management') {
+              Navigator.push(
+                context,MaterialPageRoute(
                 builder: (context) => wid,
               ),
-            );
+              );
+            }
+
+            else {
+              if (historyStatus == false) {
+
+                AlertDialog msg = display_result('No history available.') ;
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return msg ;
+                  },
+                ) ;
+              }
+
+              else {
+                Navigator.push(
+                  context,MaterialPageRoute(
+                  builder: (context) => wid,
+                ),
+                );
+              }
+            }
+
           },
           textColor: Colors.brown[400],
           child: Text(

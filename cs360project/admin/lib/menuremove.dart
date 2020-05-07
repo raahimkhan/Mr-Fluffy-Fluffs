@@ -218,7 +218,7 @@ class SettingMenuRemove extends StatelessWidget {
                           FlatButton(
                             onPressed: () {
                               Navigator.of(context).pop() ;
-                              Navigator.of(context).pushReplacementNamed('/menu_managerhm') ;
+                              Navigator.of(context).pushReplacementNamed('/menu_manage') ;
                             }, child: Text('Ok'),
                           ),
                         ],

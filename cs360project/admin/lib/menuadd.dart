@@ -214,7 +214,7 @@ Widget imageIcon(wTH, hTH) {
               border: Border.all(width: wTH * 0.5, color: Colors.black)),
           child: GestureDetector(
             onTap: (){
-              print('Coming Soon') ;
+
             },
             child: Icon(
               Icons.add,
