@@ -164,7 +164,7 @@ class _OpeningScreenState extends State<OpeningScreen> {
                               const Duration(milliseconds: 2000), () => {}) ;
                           // After [onPressed], it will trigger animation running backwards, from end to beginning
                           return () {
-                            Navigator.of(context).pushReplacementNamed('/signup_screen2') ;
+                            Navigator.of(context).pushReplacementNamed('/signup_screen1') ;
                           };
 
                         },
