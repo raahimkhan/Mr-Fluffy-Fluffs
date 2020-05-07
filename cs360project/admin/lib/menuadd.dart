@@ -1,9 +1,18 @@
+import 'package:admin/Data/menuItems.dart';
 import 'package:flutter/material.dart';
 
-class MenuAdd extends StatelessWidget {
+// These are pancakes credentials
+String title, description ;
+int price ;
 
-  final TextEditingController emailController = new TextEditingController();
-  
+
+class MenuAdd extends StatefulWidget {
+  @override
+  _MenuAddState createState() => _MenuAddState();
+}
+
+class _MenuAddState extends State<MenuAdd> {
+
   @override
   Widget build(BuildContext context) {
 
@@ -50,13 +59,18 @@ class MenuAdd extends StatelessWidget {
               child: Align (
                 child: SizedBox(
                   width: blockWidth * 80,
-                  child: TextField(
-                    controller: emailController,
+                  child: TextFormField(
+                    onChanged: (String user){
+                      setState(() {
+                        title = user ;
+                      });
+                    },
+
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.brown[200], 
+                          color: Colors.brown[200],
                           width: 0,
                         ),
                         borderRadius: BorderRadius.circular(0),
@@ -72,13 +86,18 @@ class MenuAdd extends StatelessWidget {
               child: Align(
                 child: SizedBox(
                   width: blockWidth * 80,
-                  child: TextField(
-                    controller: emailController,
+                  child: TextFormField(
+                    onChanged: (String user){
+                      setState(() {
+                        description = user ;
+                      });
+                    },
+
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.brown[200], 
+                          color: Colors.brown[200],
                           width: 0,
                         ),
                         borderRadius: BorderRadius.circular(0),
@@ -91,31 +110,38 @@ class MenuAdd extends StatelessWidget {
             ),
             SizedBox(height: blockWidth * 3),
             Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Price",
-                style: TextStyle(
-                  fontSize: blockWidth * 6,
-                  // fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(width: blockWidth * 3),
-              Container(
-                width: blockWidth * 30,
-                child: TextField(
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.black,
-                      ),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                    hintText: "RS",
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Price",
+                  style: TextStyle(
+                    fontSize: blockWidth * 6,
+                    // fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
+                SizedBox(width: blockWidth * 3),
+                Container(
+                  width: blockWidth * 30,
+                  child: TextFormField(
+
+                    keyboardType: TextInputType.text,
+                    onChanged: (String user){
+                      setState(() {
+                        price = int.parse(user) ;
+                      });
+                    },
+
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                        ),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                      hintText: "RS",
+                    ),
+                  ),
+                ),
               ],
             ),
             SizedBox(height: blockWidth * 5),
@@ -131,8 +157,28 @@ class MenuAdd extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.only(bottom: blockWidth * 5),
               child: RaisedButton(
-                onPressed: (){
-                  print("Save Button");
+                onPressed: () async{
+                  dynamic resp = await addMenu(title, description, price) ;
+
+                  AlertDialog alert = AlertDialog(
+                    title: Text(resp['msg']),
+                    actions: [
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pop() ;
+                          Navigator.of(context).pushReplacementNamed('/menu_add') ;
+                        }, child: Text('Ok'),
+                      ),
+                    ],
+                  ) ;
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert ;
+                    },
+                  ) ;
+
                 },
                 textColor: Colors.white,
                 color: Color(0xffbb5e1e),
@@ -144,7 +190,7 @@ class MenuAdd extends StatelessWidget {
                   ),
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(blockWidth * 6)
+                    borderRadius: BorderRadius.circular(blockWidth * 6)
                 ),
               ),
             ),
@@ -155,6 +201,7 @@ class MenuAdd extends StatelessWidget {
   }
 }
 
+// Functionality of this widget yet to be implemented
 Widget imageIcon(wTH, hTH) {
   return SizedBox(
       height: hTH * 25,
@@ -167,7 +214,7 @@ Widget imageIcon(wTH, hTH) {
               border: Border.all(width: wTH * 0.5, color: Colors.black)),
           child: GestureDetector(
             onTap: (){
-              print("Impport Image");
+              print('Coming Soon') ;
             },
             child: Icon(
               Icons.add,

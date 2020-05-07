@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:admin/Data/menuItems.dart';
-import 'package:admin/Data/temp_1.dart';
+
+List temp ; // Used in search bar as a temp variable. Equated to menuList
 
 class MenuRemove extends StatefulWidget {
   @override
@@ -156,7 +157,8 @@ class _HelperMenuRemoveState extends State<HelperMenuRemove> {
               itemBuilder: (BuildContext context, int index) {
                 Map menu = menuItems[index];
                 return SettingMenuRemove(
-                  name: menu['name'],
+                  name: menu['Name'],
+                  id: menu['_id']
                 );
               },
             ),
@@ -172,8 +174,9 @@ class _HelperMenuRemoveState extends State<HelperMenuRemove> {
 
 class SettingMenuRemove extends StatelessWidget {
   final String name;
+  final String id;
 
-  SettingMenuRemove({Key key, this.name}) :super(key: key);
+  SettingMenuRemove({Key key, this.name,  this.id}) :super(key: key);
  
   @override
   Widget build(BuildContext context) {
@@ -206,8 +209,27 @@ class SettingMenuRemove extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(right: blockWidth * 2),
                   child: RaisedButton(
-                    onPressed: () {
-                      print("Remove");
+                    onPressed: () async {
+                      dynamic resp = await deleteMenu(this.id) ;
+
+                      AlertDialog alert = AlertDialog(
+                        title: Text(resp['msg']),
+                        actions: [
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.of(context).pop() ;
+                              Navigator.of(context).pushReplacementNamed('/menu_remove') ;
+                            }, child: Text('Ok'),
+                          ),
+                        ],
+                      ) ;
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert ;
+                        },
+                      ) ;
                     },
                     child: Text(
                       "Remove",

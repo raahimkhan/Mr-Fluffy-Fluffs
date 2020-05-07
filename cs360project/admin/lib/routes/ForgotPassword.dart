@@ -45,6 +45,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     var response = await Requests.post(
         forget_url,
         body: body,
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

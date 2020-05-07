@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'package:requests/requests.dart' ;
 import 'package:shared_preferences/shared_preferences.dart' ;
+import 'package:admin/Data/menuItems.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -18,11 +19,12 @@ class AdminHome extends StatefulWidget {
 class _AdminHomeState extends State<AdminHome> {
 
   var admin_logout_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/admin/logout' ;
-  String name ;
+  String name ; // name of admin who is logged in
 
   Future <void> admin_logout() async {
     var response = await Requests.post(
         admin_logout_url,
+        timeoutSeconds: 25,
         body: {},
         bodyEncoding: RequestBodyEncoding.JSON
     );

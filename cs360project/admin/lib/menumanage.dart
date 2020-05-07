@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:admin/Data/menuItems.dart';
-import 'package:admin/Data/temp_1.dart';
 import 'package:admin/menuadd.dart';
 import 'package:admin/menuremove.dart';
-// import 'package:http/http.dart' as http ;
-// import 'dart:convert';
-// import 'dart:async';
-// import 'dart:collection';
+import 'dart:async';
+import 'dart:collection';
+import 'package:requests/requests.dart' ;
+import 'package:shared_preferences/shared_preferences.dart' ;
+import 'package:http/http.dart' as http ;
+import 'dart:convert';
+
+List temp ; // Used in search bar as a temp variable. Equated to menuList
 
 class MenuManage extends StatefulWidget {
   @override
@@ -32,204 +35,149 @@ class _MenuManageState extends State<MenuManage> {
       // A ListView was used in this case instead of a column because we wanted this screen to scroll and this can't be done by using Columns
 
       body: Container(
-        child: ListView(
-          children: <Widget>[
+          child: new FutureBuilder <dynamic> (
 
-            // Rows were used here to correctly position the icons and the search bars
+          future: fetchMenu(),
+          builder: (BuildContext context, AsyncSnapshot <dynamic> feedState) {
+            if (feedState.hasData) {
+              // This means future has been completed and we can use the data received to build our widgets
+            }
 
-            Padding(
-              padding: EdgeInsets.only(top: blockWidth * 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,MaterialPageRoute(
-                          builder: (context) => MenuRemove(),
-                        ),
-                      );
-                    },
-                    icon: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(blockWidth * 2),
-                          color: Colors.red,
-                          border: Border.all(width: blockWidth * 0.5, color: Color(0xffbb5e1e))),
-                      child: Icon(
-                        Icons.remove,
-                        color: Colors.white,
-                        size: blockWidth * 8, 
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,MaterialPageRoute(
-                          builder: (context) => MenuAdd(),
-                        ),
-                      );
-                    },
-                    icon:Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(blockWidth * 2),
-                          color: Colors.brown[400],
-                          border: Border.all(width: blockWidth * 0.5, color: Colors.black)),
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: blockWidth * 8, 
-                      ),
-                    ), 
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: blockHeight * 3),
-            Container(
-              child: Align(
-                child: SizedBox(
-                  width: blockWidth * 80,
-                  child: TextField(
-                    controller: emailController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                       borderSide: BorderSide(
-                         color: Colors.brown[200], 
-                         width: blockWidth * 0.3,
-                       ),
-                       borderRadius: BorderRadius.circular(blockWidth),
-                      ),
-                      hintText: "Search Menu",
-                      suffixIcon: IconButton(
-                        onPressed: (){
-                          String name = emailController.text;
-                          if (name.isEmpty){
-                            temp = menuItems;
-                          }
-                          else {
-                            List<Map> temp2 = [];
-                            for (Map i in temp) {
-                              for (int j = 0; j < i['name'].length; j++) {
-                                if(j+name.length+1>i['name'].length){
-                                  break;
-                                }
-                                if (name.toLowerCase() == i['name']
-                                    .substring(j, j + name.length)
-                                    .toLowerCase()) {
-                                  temp2.add(i);
-                                  break;
-                                }
-                              }
-                            }
-                          }
+            else {
+              // This will run until future has not been completed
+              return new Center(child: new CircularProgressIndicator());
+            }
+
+            return  ListView(
+              children: <Widget>[
+
+                // Rows were used here to correctly position the icons and the search bars
+
+                Padding(
+                  padding: EdgeInsets.only(top: blockWidth * 3),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,MaterialPageRoute(
+                            builder: (context) => MenuRemove(),
+                          ),
+                          );
                         },
-                        icon: Icon(Icons.search),
+                        icon: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(blockWidth * 2),
+                              color: Colors.red,
+                              border: Border.all(width: blockWidth * 0.5, color: Color(0xffbb5e1e))),
+                          child: Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                            size: blockWidth * 8,
+                          ),
+                        ),
                       ),
-                    ),
-                    onSubmitted: (String name){
-                      setState((){
-                        if (name.isEmpty){
-                          temp = menuItems;
-                        }
-                        else {
-                          List<Map> temp2 = [];
-                          for (Map i in temp) {
-                            for (int j = 0; j < i['name'].length; j++) {
-                              if(j+name.length+1>i['name'].length){
-                                break;
-                              }
-                              if (name.toLowerCase() == i['name']
-                                  .substring(j, j + name.length)
-                                  .toLowerCase()) {
-                                temp2.add(i);
-                                break;
-                              }
-                            }
-                          }
-                          temp = temp2;
-                        }
-                      });
-                    }
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,MaterialPageRoute(
+                            builder: (context) => MenuAdd(),
+                          ),
+                          );
+                        },
+                        icon:Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(blockWidth * 2),
+                              color: Colors.brown[400],
+                              border: Border.all(width: blockWidth * 0.5, color: Colors.black)),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: blockWidth * 8,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: <Widget>[
-            //     Flexible(
-            //       child: TextField(
-            //         controller: emailController,
-            //         keyboardType: TextInputType.text,
-            //         decoration: InputDecoration(
-            //           enabledBorder: OutlineInputBorder(
-            //            borderSide: BorderSide(
-            //              color: Colors.brown[200], 
-            //              width: blockWidth * 0.3,
-            //            ),
-            //            borderRadius: BorderRadius.circular(blockWidth),
-            //           ),
-            //           hintText: "Search Menu",
-            //           suffixIcon: IconButton(
-            //             onPressed: (){
-            //               String name = emailController.text;
+                SizedBox(height: blockHeight * 3),
+                Container(
+                  child: Align(
+                    child: SizedBox(
+                      width: blockWidth * 80,
+                      child: TextField(
+                          controller: emailController,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.brown[200],
+                                width: blockWidth * 0.3,
+                              ),
+                              borderRadius: BorderRadius.circular(blockWidth),
+                            ),
+                            hintText: "Search Menu",
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                String name = emailController.text;
+                                if (name.isEmpty){
+                                  temp = menuItems;
+                                }
+                                else {
+                                  List<Map> temp2 = [];
+                                  for (Map i in temp) {
+                                    for (int j = 0; j < i['name'].length; j++) {
+                                      if(j+name.length+1>i['name'].length){
+                                        break;
+                                      }
+                                      if (name.toLowerCase() == i['name']
+                                          .substring(j, j + name.length)
+                                          .toLowerCase()) {
+                                        temp2.add(i);
+                                        break;
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              icon: Icon(Icons.search),
+                            ),
+                          ),
+                          onSubmitted: (String name){
+                            setState((){
+                              if (name.isEmpty){
+                                menuItems = temp;
+                              }
+                              else {
+                                List<Map> temp2 = [];
+                                for (Map i in menuItems) {
+                                  for (int j = 0; j < i['name'].length; j++) {
+                                    if(j+name.length+1>i['name'].length){
+                                      break;
+                                    }
+                                    if (name.toLowerCase() == i['name']
+                                        .substring(j, j + name.length)
+                                        .toLowerCase()) {
+                                      temp2.add(i);
+                                      break;
+                                    }
+                                  }
+                                }
+                                menuItems = temp2;
+                              }
+                            });
+                          }
+                      ),
+                    ),
+                  ),
+                ),
 
-            //               if (name.isEmpty){
-            //                 temp = menuItems;
-            //               }
-            //               else {
-            //                 List<Map> temp2 = [];
-            //                 for (Map i in temp) {
-            //                   for (int j = 0; j < i['name'].length; j++) {
-            //                     if(j+name.length+1>i['name'].length){
-            //                       break;
-            //                     }
-            //                     if (name.toLowerCase() == i['name']
-            //                         .substring(j, j + name.length)
-            //                         .toLowerCase()) {
-            //                       temp2.add(i);
-            //                       break;
-            //                     }
-            //                   }
-            //                 }
-            //               }
-            //             },
-            //             icon: Icon(Icons.search),
-            //           ),
-            //         ),
-            //           onSubmitted: (String name){
-            //             setState((){
-            //               if (name.isEmpty){
-            //                 temp = menuItems;
-            //               }
-            //               else {
-            //                 List<Map> temp2 = [];
-            //                 for (Map i in temp) {
-            //                   for (int j = 0; j < i['name'].length; j++) {
-            //                     if(j+name.length+1>i['name'].length){
-            //                       break;
-            //                     }
-            //                     if (name.toLowerCase() == i['name']
-            //                         .substring(j, j + name.length)
-            //                         .toLowerCase()) {
-            //                       temp2.add(i);
-            //                       break;
-            //                     }
-            //                   }
-            //                 }
-            //                 temp = temp2;
-            //               }
-            //             });
-            //           }
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            HelperMenuManage(),
-          ],
-        ),
+                HelperMenuManage(),
+              ],
+            );
+          }
+          ),
       ),
     );
   }
@@ -268,13 +216,23 @@ class _HelperMenuManageState extends State<HelperMenuManage> {
               shrinkWrap: true,
               itemCount: menuItems == null ? 0 :menuItems.length,
               itemBuilder: (BuildContext context, int index) {
-                Map menu = menuItems[index];
-                // String s = myImg[index];
+                String a = menuItems[index]['Path'];
+                String b = '';
+                for(int i = 0; i<a.length; i++)
+                {
+                  if(a[i]==' ')
+                  {
+                    b = b + '%20';
+                  }
+                  else {
+                    b = b + a[i];
+                  }
+                }
                 return SettingMenuManageCards(
-                  img: menu['img'],
-                  name: menu['name'],
-                  subtitle: menu['subtitle'],
-                  price: menu['price'],
+                  img: b,
+                  name: menuItems[index]['Name'],
+                  subtitle: menuItems[index]['Description'],
+                  price: menuItems[index]['Price'],
                 );
               },
             ),
@@ -328,7 +286,7 @@ class SettingMenuManageCards extends StatelessWidget {
                 width: blockWidth * 30,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(blockWidth * 2),
-                  child: Image.asset(
+                  child: Image.network(
                     img,
                     fit: BoxFit.cover,
                   ),

@@ -4,7 +4,9 @@ import 'dart:collection';
 import 'package:requests/requests.dart' ;
 import 'package:shared_preferences/shared_preferences.dart' ;
 
-var services_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/services' ;
+// This function is commented out but can be used to check status of services printed on console
+
+// var services_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/services' ;
 
 //Future <void> get_services() async {
 //  var response = await Requests.get(
@@ -24,9 +26,9 @@ class Service extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // Variables for adjusting Screen width and Height according to different sizes
+    // get_services() ;
 
-    //get_services() ;
+    // Variables for adjusting Screen width and Height according to different sizes
 
     var wTH = MediaQuery.of(context).size.width;
     var hTH = MediaQuery.of(context).size.height;
@@ -211,6 +213,7 @@ Future <void> toggleService(name, body) async {
   var response = await Requests.patch(
       patch_url + name,
       body: body,
+      timeoutSeconds: 25,
       bodyEncoding: RequestBodyEncoding.JSON
   ) ;
 

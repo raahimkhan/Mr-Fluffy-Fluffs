@@ -35,6 +35,7 @@ class _ForgotPasswordScreen2State extends State<ForgotPasswordScreen2> {
     var response = await Requests.patch(
         patch_url,
         body: body,
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

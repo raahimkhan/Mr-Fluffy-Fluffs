@@ -85,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
     var response = await Requests.post(
         url,
         body: body,
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 
