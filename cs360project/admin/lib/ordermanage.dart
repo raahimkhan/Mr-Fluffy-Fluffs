@@ -65,6 +65,7 @@ List data = [
     "Subtotal": 320,
     "DeliveryFee": 40,
     "Status": "Completed",
+
     "Date": "2020/05/05",
     "Pancakes": [{
       'Name': 'Chocolate Chip Pancake',
@@ -79,6 +80,10 @@ List data = [
     ],
   },
 ];
+List temp = data;
+List temp1 = data;
+
+
 
 class OrderManage extends StatefulWidget {
   @override
@@ -86,6 +91,7 @@ class OrderManage extends StatefulWidget {
 }
 
 TextEditingController emailController = new TextEditingController();
+TextEditingController emailController_2 = new TextEditingController();
 
 class _OrderManageState extends State<OrderManage> {
   
@@ -168,10 +174,39 @@ class _OrderManageState extends State<OrderManage> {
                               hintText: "Search Orders",
                               suffixIcon: IconButton(
                                 onPressed: (){
+
+
                                 },
                                 icon: Icon(Icons.search),
                               ),
                             ),
+                            onSubmitted: (String name){
+                              setState((){
+                                name = emailController.text;
+
+                                if (name.isEmpty){
+                                  temp = data;
+                                }
+                                else {
+                                  List<Map> temp2 = [];
+                                  for (Map i in temp) {
+                                    for (int j = 0; j < i['Tracking_ID'].length; j++) {
+                                      if(j+name.length+1>i['Tracking_ID'].length){
+                                        break;
+                                      }
+                                      if (name.toLowerCase() == i['Tracking_ID']
+                                          .substring(j, j + name.length)
+                                          .toLowerCase()) {
+                                        temp2.add(i);
+                                        break;
+                                      }
+                                    }
+                                  }
+                                  temp = temp2;
+                                }
+                              });
+                              print(name);
+                            },
                           ),
                         ),
                       ),
@@ -190,7 +225,7 @@ class _OrderManageState extends State<OrderManage> {
                         child: SizedBox(
                           width: blockWidth * 80,
                           child: TextField(
-                          controller: emailController,
+                          controller: emailController_2,
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
@@ -207,6 +242,35 @@ class _OrderManageState extends State<OrderManage> {
                               icon: Icon(Icons.search),
                             ),
                           ),
+                            onSubmitted: (String name){
+                        setState((){
+                          name = emailController_2.text;
+
+                        if (name.isEmpty){
+                        temp1 = data;
+                        }
+                        else {
+                        List<Map> temp2 = [];
+                        for (Map i in temp1) {
+                        for (int j = 0; j < i['Tracking_ID'].length; j++) {
+                        if(j+name.length+1>i['Tracking_ID'].length){
+                        break;
+                        }
+
+                        if (name.toLowerCase() == i['Tracking_ID']
+                            .substring(j, j + name.length)
+                            .toLowerCase()  )   {
+
+                        temp2.add(i);
+                        break;
+                        }
+                        }
+                        }
+                        temp1 = temp2;
+                        }
+                        });
+                        print(name);
+                        },
                         ),
                                               ),
                       ),
@@ -238,9 +302,9 @@ class _OrderManageMenuState extends State<OrderManageMenu> {
           ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: data == null ? 0 :data.length,
+              itemCount: temp == null ? 0 :temp.length,
               itemBuilder: (BuildContext context, int index) {
-                Map elem = data[index];
+                Map elem = temp[index];
                 return OrderManageMenuSetup(
                   id: elem['Tracking_ID'],
                   date: elem['Date'],
@@ -272,9 +336,9 @@ class _OrderManageMenuTwoState extends State<OrderManageMenuTwo> {
           ListView.builder(
               primary: false,
               shrinkWrap: true,
-              itemCount: data == null ? 0 :data.length,
+              itemCount: temp1 == null ? 0 :temp1.length,
               itemBuilder: (BuildContext context, int index) {
-                Map elem = data[index];
+                Map elem = temp1[index];
                 return OrderManageMenuTwoSetup(
                   id: elem['Tracking_ID'],
                   date: elem['Date'],
