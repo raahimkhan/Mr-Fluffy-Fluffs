@@ -183,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Align(
-                    alignment: Alignment(-blockWidth * 0.26, 0), // -0.150
+                    alignment: Alignment(-blockWidth * 0.20, 0), // -0.150
                     child: profile(blockWidth)
                   ),
                 ],
@@ -236,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Align(
-                    alignment: Alignment(-blockWidth * 0.26, 0),
+                    alignment: Alignment(-blockWidth * 0.20, 0),
                     child: padlock(blockWidth),
                   ),
                 ],

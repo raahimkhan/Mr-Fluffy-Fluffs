@@ -28,7 +28,6 @@ class CartItemsBloc {
 
   void removeCheckout(item) {
     checkoutItem.remove(item);
-    print("Removed:  + ${checkoutItem.length}");
     cartStreamController.sink.add(checkoutItem);
   }
 

@@ -327,7 +327,7 @@ class SettingMenuCards extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(0, blockHeight * 0.5, 0, blockHeight * 0.5),
       child: InkWell(
         onTap: (){
-            // print("Hello Mama");
+
           Navigator.push(
             context,MaterialPageRoute(
               builder: (context) => MenuTwo(img: img, name: name, subtitle: subtitle, price:  price),
