@@ -4,7 +4,6 @@ import 'package:fluffs/extra.dart';
 import 'package:fluffs/profile.dart';
 import 'package:fluffs/sideBar.dart';
 import 'package:fluffs/Data/addons.dart';
-import 'package:fluffs/Data/temp_1.dart';
 import 'package:fluffs/menu2.dart';
 import 'package:http/http.dart' as http ;
 import 'dart:convert';
@@ -15,6 +14,16 @@ import 'package:shared_preferences/shared_preferences.dart' ;
 
 List menuS;
 List menu = menuS;
+
+Widget lines(wTH) {
+  return Divider(
+    thickness: 0.4,
+    color: Colors.black,
+    indent: wTH * 0.04,
+    endIndent: wTH * 0.05,
+  );
+}
+
 
 String url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/menu';
 
@@ -106,7 +115,28 @@ class _MenuState extends State<Menu> {
                         ),
                         );
                       },
-                      icon: Icon(Icons.shopping_cart),
+                      icon: Stack(
+                        children: <Widget>[
+                          Icon(Icons.shopping_cart),
+                          // For Notification Bar
+                          if (bloc.allItems.length > 0)
+                            Padding(
+                              padding: EdgeInsets.only(left: blockWidth * 0.2),
+                              child: CircleAvatar(
+                                radius: blockWidth * 2,
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                child: Text(
+                                  (bloc.allItems[bloc.allItems.length-1]['quan'] + bloc.allItems[bloc.allItems.length-1]['number']).toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: blockWidth * 2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                       color: Colors.red[200],
                     ),
                   ],
@@ -129,6 +159,7 @@ class _MenuState extends State<Menu> {
                       ),
                     ),
                     Flexible(
+
                       child: TextField(
                           controller: emailController,
                           keyboardType: TextInputType.text,
@@ -195,17 +226,24 @@ class _MenuState extends State<Menu> {
                             });
                           }
                       ),
+
                     ),
+                    SizedBox(height: blockWidth * 27),
+
                   ],
                 ),
                 HelperMenu(),
+
               ],
+
             );
 
           }
+
         ) ,
 
       ),
+
     );
   }
 }
@@ -302,7 +340,7 @@ class SettingMenuCards extends StatelessWidget {
               // For Text Padding
               padding: EdgeInsets.only(left: 0.0, right: blockWidth * 1.5),
               child: Container(
-                height: blockWidth * 40,
+                height: blockWidth * 30,
                 width: blockWidth * 30,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(blockWidth * 2),
@@ -313,33 +351,37 @@ class SettingMenuCards extends StatelessWidget {
                 ),
               ),
             ),
+
             Flexible(
               child:
               Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+
                 Text(
                   name,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                    fontSize: blockWidth * 4,
                     fontWeight: FontWeight.bold,
-                    color: Colors.brown[400],
+                    color: Color(0xffbb5e1e),
                     fontFamily: 'NunitoSansSemiBold',
                   ),
                 ),
+
                 SizedBox(height: blockHeight * 1),
                 Wrap(
                   direction: Axis.horizontal,
                   children: <Widget>[
+
                     Text(
                       subtitle,
                       // overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: blockWidth * 3,
                         fontWeight: FontWeight.w300,
-                        color: Colors.brown[400],
+                        color: Color(0xffbb5e1e),
                       ),
                     ),
                   ],
@@ -349,25 +391,41 @@ class SettingMenuCards extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                       padding: EdgeInsets.only(right: blockWidth * 2),
+                      padding: EdgeInsets.only(top: blockWidth ),
+
+                      child:
+                    Padding(
+                       padding: EdgeInsets.only(right: blockWidth * 2,
+                       ),
                        child: Text(
                        "Rs $price",
                        overflow: TextOverflow.ellipsis,
                        style: TextStyle(
                          fontSize: blockWidth * 4,
                          fontWeight: FontWeight.bold,
-                         color: Colors.brown[400],
+                         color: Color(0xffbb5e1e),
                        ),
                      ),
-                   ),
+                   ),)
                   ],
                 ),
+                SizedBox(height: blockHeight * 1.5),
+                lines(blockWidth),
+
               ],
+
+
             ),
+
+
            ),
+
           ],
         ),
+
       ),
+
     );
+
   }
 }

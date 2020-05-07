@@ -12,6 +12,7 @@ import 'package:fluffs/routes/home.dart';
 import 'package:fluffs/profile.dart';
 import 'package:fluffs/menu.dart' ;
 import 'package:fluffs/cart_1.dart' ;
+import 'package:fluffs/leaderboard.dart' ;
 
 // Main only contains the routes that are in this application.
 // Routes are basically the different screens
@@ -34,6 +35,7 @@ void main() => runApp(MaterialApp(
     '/home_screen': (context) => Home(),
     '/profile': (context) => Profile(),
     '/menu_1': (context) => Menu(),
-    '/cart_1': (context) => Cart()
+    '/cart_1': (context) => Cart(),
+    '/leader': (context) => Leaderboard()
   },
 )) ;

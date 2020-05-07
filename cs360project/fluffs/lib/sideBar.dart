@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluffs/Data/temp_1.dart';
 import 'package:fluffs/menu.dart';
-
 
 class SideBar extends StatelessWidget {
   @override

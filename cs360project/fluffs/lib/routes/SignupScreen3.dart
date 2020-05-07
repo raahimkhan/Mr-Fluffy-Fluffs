@@ -38,6 +38,7 @@ class _SignupScreen3State extends State<SignupScreen3> {
     var response = await Requests.post(
         url,
         body: body,
+        timeoutSeconds: 25,
         bodyEncoding: RequestBodyEncoding.JSON
     ) ;
 

@@ -34,6 +34,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return alert ;
   }
 
+  // User details
   String username ;
   String email ;
   String mobile ;

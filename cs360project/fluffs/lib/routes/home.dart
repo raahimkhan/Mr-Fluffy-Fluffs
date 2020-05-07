@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
 
   var services_url = 'http://mr-fluffy-fluffs.herokuapp.com/api/common/services' ;
 
+  // Function to get status of services (whether they are available or under maintenance)
   Future <void> get_services() async {
     var response = await Requests.get(
       services_url,
@@ -140,13 +141,7 @@ class _HomeState extends State<Home> {
 
                           else {
                             if (leaderStatus == true) {
-                              AlertDialog msg = display_result('Coming soon.') ;
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return msg ;
-                                },
-                              ) ;
+                              Navigator.of(context).pushReplacementNamed('/leader') ;
                             }
 
                             else {
